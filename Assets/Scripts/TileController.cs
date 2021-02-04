@@ -26,7 +26,6 @@ public class TileController : MonoBehaviour {
         }
 
         string data = mapFile.text;
-        Debug.Log(data);
 
         string[] tiles = data.Split(',');
 
