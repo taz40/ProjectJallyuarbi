@@ -6,6 +6,7 @@ MonoImporter:
   defaultReferences:
   - tilePrefab: {fileID: 8268817618015664573, guid: 9f452daedafb7ab4b902bc6a73a082ec,
       type: 3}
+  - mapFile: {fileID: 4900000, guid: 86d0124d1053650408e8d72d9a44ca6f, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
