@@ -51,7 +51,7 @@ public class TileController : MonoBehaviour {
         //Now iterate over every tile and create it.
         for(int x = 0; x < width; x++) {
             for(int y = 0; y < height; y++) {
-                GameObject go = Instantiate(tilePrefab, new Vector3(x, y, 0), Quaternion.identity, transform); //Here we create a new object from the prefab at the correct x,y position, with us as a parrent.
+                GameObject go = Instantiate(tilePrefab, new Vector3(x, y, 1), Quaternion.identity, transform); //Here we create a new object from the prefab at the correct x,y position, with us as a parrent.
                 go.name = "Tile_" + x + "_" + y; //We set the tile's name to something understandable to simplify debugging.
 
                 SpriteRenderer sr = go.GetComponent<SpriteRenderer>(); //We get the sprite renderer off of the new game object.
