@@ -7,6 +7,7 @@ public class TileController : MonoBehaviour {
     int width, height;
 
     Color[] colors = { Color.white, Color.black, Color.red, Color.blue };
+    bool[] collidable = { false, false, true, false };
 
     public GameObject tilePrefab;
     public TextAsset mapFile;
@@ -38,8 +39,13 @@ public class TileController : MonoBehaviour {
                 go.name = "Tile_" + x + "_" + y;
 
                 SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
-                
-                sr.color = colors[int.Parse(tiles[2+((y * width) + x)])];
+                int dataIndex = 2 + ((y * width) + x);
+                int tileType = int.Parse(tiles[dataIndex]);
+                sr.color = colors[tileType];
+
+                if (collidable[tileType]) {
+                    go.GetComponent<BoxCollider2D>().enabled = true;
+                }
 
             }
         }
