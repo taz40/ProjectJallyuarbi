@@ -15,6 +15,8 @@ public class DialogControler : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         ink = new Story(story.text);
+        ink.variablesState["players_name"] = "Bob";
+        ink.variablesState["npc_name"] = "Smith";
         showLine();
     }
 
@@ -28,6 +30,13 @@ public class DialogControler : MonoBehaviour {
     private void showLine() {
         if (ink.canContinue) {
             text.text = ink.Continue();
+            if (ink.currentTags.Contains("end")) {
+                text.text = "end of conversation";
+            }else if(ink.currentTags.Contains("buy weapon")) {
+                Debug.Log("Buy weapons");
+            } else if (ink.currentTags.Contains("buy armor")) {
+                Debug.Log("Buy weapons");
+            }
         }
 
         if(ink.currentChoices.Count > 0) {
