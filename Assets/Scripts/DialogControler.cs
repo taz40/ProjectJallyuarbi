@@ -35,7 +35,7 @@ public class DialogControler : MonoBehaviour {
             }else if(ink.currentTags.Contains("buy weapon")) {
                 Debug.Log("Buy weapons");
             } else if (ink.currentTags.Contains("buy armor")) {
-                Debug.Log("Buy weapons");
+                Debug.Log("Buy armor");
             }
         }
 
