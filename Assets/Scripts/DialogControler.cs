@@ -26,7 +26,7 @@ public class DialogControler : MonoBehaviour {
             showLine();
         }
     }
-
+    
     private void showLine() {
         if (ink.canContinue) {
             text.text = ink.Continue();
