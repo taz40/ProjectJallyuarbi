@@ -532,11 +532,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc85080f70adf9f41a1ca5d4196f914a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  story: {fileID: 4900000, guid: 026eac434389f8e4b98bb4ba4f1d6928, type: 3}
   text: {fileID: 7786346076723847146}
   name: {fileID: 9175133882170090542}
   button: {fileID: 5417842051889576369, guid: 6ccaaceddbc885d4aa83daed8e91c66b, type: 3}
   buttonList: {fileID: 3064763801355854346}
+  canvas: {fileID: 7786346077260845717}
 --- !u!1 &7786346077260845717
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,19 +6,36 @@ using UnityEngine.UI;
 
 public class DialogControler : MonoBehaviour {
 
-    public TextAsset story;
     Story ink;
     public Text text;
     public Text name;
     public GameObject button;
     public GameObject buttonList;
+    public GameObject canvas;
+    public GameObject player;
 
     void Start() {
+        player = FindObjectOfType<PlayerMovement>().gameObject;
+    }
+
+    void blockInput() {
+        player.GetComponent<PlayerMovement>().enabled = false;
+        player.GetComponent<Interact>().enabled = false;
+    }
+
+    void unblockInput() {
+        player.GetComponent<PlayerMovement>().enabled = true;
+        player.GetComponent<Interact>().enabled = true;
+    }
+
+    public void playStory(Story s) {
         //Load the story, set variables, get speeker name and show the first line of dialog
-        ink = new Story(story.text);
+        ink = s;
+        ink.ChoosePathString("start");
         ink.variablesState["players_name"] = "Bob";
-        name.text = ink.variablesState["speeker"].ToString();
+        canvas.SetActive(true);
         showLine();
+        blockInput();
     }
 
     void Update() {
@@ -32,8 +49,10 @@ public class DialogControler : MonoBehaviour {
         //Show the line on the screen if there is not a choice to be made.
         if (ink.canContinue) {
             text.text = ink.Continue();
+            name.text = ink.variablesState["speeker"].ToString();
             if (ink.currentTags.Contains("end")) {
-                text.text = "end of conversation";
+                canvas.SetActive(false);
+                unblockInput();
             }else if(ink.currentTags.Contains("buy weapon")) {
                 Debug.Log("Buy weapons");
             } else if (ink.currentTags.Contains("buy armor")) {

@@ -1,7 +1,9 @@
 VAR players_name = "unknown"
 VAR meet_player = false
+VAR npc_name = "Smith"
 VAR speeker = "Smith"
 
+=== start ===
 { not meet_player:
     -> intro
 }
