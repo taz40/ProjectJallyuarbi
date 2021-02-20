@@ -9,6 +9,7 @@ public class DialogControler : MonoBehaviour {
     public TextAsset story;
     Story ink;
     public Text text;
+    public Text name;
     public GameObject button;
     public GameObject buttonList;
 
@@ -16,7 +17,7 @@ public class DialogControler : MonoBehaviour {
     void Start() {
         ink = new Story(story.text);
         ink.variablesState["players_name"] = "Bob";
-        ink.variablesState["npc_name"] = "Smith";
+        name.text = ink.variablesState["speeker"].ToString();
         showLine();
     }
 

@@ -1,6 +1,6 @@
 VAR players_name = "unknown"
-VAR npc_name = "unknown"
 VAR meet_player = false
+VAR speeker = "Smith"
 
 { not meet_player:
     -> intro
@@ -11,7 +11,7 @@ VAR meet_player = false
 ~ meet_player = true
 Hello traveler! What's your name?
 + [{players_name}]
-    Well, nice to meet you {players_name}. I'm {npc_name}, the local blacksmith.
+    Well, nice to meet you {players_name}. I'm Smith, the local blacksmith.
     Weapons, Shields, Armor I got it all.
     -> help
 
