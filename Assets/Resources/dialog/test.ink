@@ -1,27 +1,29 @@
-VAR players_name = "unknown"
+VAR g_players_name = "unknown"
 VAR meet_player = false
 VAR npc_name = "Smith"
-VAR speeker = "???"
+VAR g_speeker = "???"
+VAR g_meet_smith = false
 
 === start ===
 { not meet_player:
     -> intro
 }
-~ speeker = "Smith"
+~ g_speeker = "Smith"
 -> help
 
 === intro ===
 ~ meet_player = true
 Hello traveler! What's your name?
-~ speeker = players_name
-My name is {players_name}.
-~ speeker = "Smith"
-Well, nice to meet you {players_name}. I'm Smith, the local blacksmith.
+~ g_speeker = g_players_name
+My name is {g_players_name}.
+~ g_speeker = "Smith"
+~ g_meet_smith = true
+Well, nice to meet you {g_players_name}. I'm Smith, the local blacksmith.
 Weapons, Shields, Armor I got it all.
 -> help
 
 === help ===
-What can I do for you, {players_name}?
+What can I do for you, {g_players_name}?
 + [buy weapon] -> buy_weapon
 + [buy armor] -> buy_armor
 + [done]

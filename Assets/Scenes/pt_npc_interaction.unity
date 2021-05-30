@@ -241,7 +241,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!850595691 &1256456034
 LightingSettings:
@@ -451,6 +451,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC
       objectReference: {fileID: 0}
+    - target: {fileID: 5423304004090654998, guid: 397710b03df0ba64794976aa96d65b3a,
+        type: 3}
+      propertyPath: inkFile
+      value: 
+      objectReference: {fileID: 4900000, guid: f7a188958d3b27e42a65e16971f497a9, type: 3}
     - target: {fileID: 5423304004090654999, guid: 397710b03df0ba64794976aa96d65b3a,
         type: 3}
       propertyPath: m_RootOrder

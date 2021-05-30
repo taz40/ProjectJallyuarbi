@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Ink.Runtime;
 using UnityEngine.UI;
+using Object = Ink.Runtime.Object;
 
 public class DialogControler : MonoBehaviour {
 
@@ -18,8 +19,11 @@ public class DialogControler : MonoBehaviour {
     string textToAnim = "";
     int character = 0;
     float timer = 0;
+    public Dictionary<string, object> globalVars;
 
     void Start() {
+        globalVars = new Dictionary<string, object>();
+        globalVars["g_players_name"] = "Bob";
         player = FindObjectOfType<PlayerMovement>().gameObject;
     }
 
@@ -37,7 +41,10 @@ public class DialogControler : MonoBehaviour {
         //Load the story, set variables, get speeker name and show the first line of dialog
         ink = s;
         ink.ChoosePathString("start");
-        ink.variablesState["players_name"] = "Bob";
+        foreach (string key in globalVars.Keys) {
+            if(ink.variablesState.GlobalVariableExistsWithName(key))
+                ink.variablesState[key] = globalVars[key];
+        }
         canvas.SetActive(true);
         showLine();
         blockInput();
@@ -47,6 +54,8 @@ public class DialogControler : MonoBehaviour {
     void Update() {
         if (textAnim) {
             //Animate Text
+            if (textToAnim.Length == 0)
+                textAnim = false;
             timer += Time.deltaTime;
             if(timer >= .01) {
                 timer = 0;
@@ -73,7 +82,12 @@ public class DialogControler : MonoBehaviour {
             character = 0;
             textAnim = true;
             timer = 0;
-            name.text = ink.variablesState["speeker"].ToString();
+            foreach (string key in ink.variablesState) {
+                if (key.StartsWith("g_")) {
+                    globalVars[key] = ink.variablesState[key];
+                }
+            }
+            name.text = globalVars["g_speeker"].ToString();
             continueText.SetActive(false);
             if (ink.currentTags.Contains("end")) {
                 canvas.SetActive(false);
