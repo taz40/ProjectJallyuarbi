@@ -13,6 +13,11 @@ public class DialogControler : MonoBehaviour {
     public GameObject buttonList;
     public GameObject canvas;
     public GameObject player;
+    public GameObject continueText;
+    bool textAnim = false;
+    string textToAnim = "";
+    int character = 0;
+    float timer = 0;
 
     void Start() {
         player = FindObjectOfType<PlayerMovement>().gameObject;
@@ -36,33 +41,63 @@ public class DialogControler : MonoBehaviour {
         canvas.SetActive(true);
         showLine();
         blockInput();
+        text.text = "";
     }
 
     void Update() {
-        //If someone presses the continue button and there is not choice to make, show the next line
-        if (Input.GetButtonDown("Continue") && ink.currentChoices.Count == 0) {
-            showLine();
+        if (textAnim) {
+            //Animate Text
+            timer += Time.deltaTime;
+            if(timer >= .01) {
+                timer = 0;
+                character++;
+                text.text = textToAnim.Substring(0, character);
+                if (character >= textToAnim.Length-1) {
+                    textAnim = false;
+                    postAnim();
+                }
+            }
+        } else {
+            //If someone presses the continue button and there is not choice to make, show the next line
+            if (Input.GetButtonDown("Continue") && ink.currentChoices.Count == 0) {
+                showLine();
+            }
         }
     }
     
     private void showLine() {
         //Show the line on the screen if there is not a choice to be made.
         if (ink.canContinue) {
-            text.text = ink.Continue();
+            //text.text = ink.Continue();
+            textToAnim = ink.Continue();
+            character = 0;
+            textAnim = true;
+            timer = 0;
             name.text = ink.variablesState["speeker"].ToString();
+            continueText.SetActive(false);
             if (ink.currentTags.Contains("end")) {
                 canvas.SetActive(false);
+                textAnim = false;
+                character = 0;
+                timer = 0;
+                textToAnim = "";
                 unblockInput();
-            }else if(ink.currentTags.Contains("buy weapon")) {
-                Debug.Log("Buy weapons");
-            } else if (ink.currentTags.Contains("buy armor")) {
-                Debug.Log("Buy armor");
             }
         }
+    }
 
+    private void postAnim() {
         //If there is a choice to be made, show the choice to the player.
-        if(ink.currentChoices.Count > 0) {
+        if (ink.currentChoices.Count > 0) {
             showChoices();
+        } else {
+            continueText.SetActive(true);
+        }
+
+        if (ink.currentTags.Contains("buy weapon")) {
+            Debug.Log("Buy weapons");
+        } else if (ink.currentTags.Contains("buy armor")) {
+            Debug.Log("Buy armor");
         }
     }
 

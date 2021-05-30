@@ -13,11 +13,12 @@ VAR speeker = "???"
 === intro ===
 ~ meet_player = true
 Hello traveler! What's your name?
-+ [{players_name}]
-    ~ speeker = "Smith"
-    Well, nice to meet you {players_name}. I'm Smith, the local blacksmith.
-    Weapons, Shields, Armor I got it all.
-    -> help
+~ speeker = players_name
+My name is {players_name}.
+~ speeker = "Smith"
+Well, nice to meet you {players_name}. I'm Smith, the local blacksmith.
+Weapons, Shields, Armor I got it all.
+-> help
 
 === help ===
 What can I do for you, {players_name}?
