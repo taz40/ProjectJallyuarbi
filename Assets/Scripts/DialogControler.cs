@@ -20,6 +20,7 @@ public class DialogControler : MonoBehaviour {
     int character = 0;
     float timer = 0;
     public Dictionary<string, object> globalVars;
+    bool running = false;
 
     void Start() {
         globalVars = new Dictionary<string, object>();
@@ -49,27 +50,30 @@ public class DialogControler : MonoBehaviour {
         showLine();
         blockInput();
         text.text = "";
+        running = true;
     }
 
     void Update() {
-        if (textAnim) {
-            //Animate Text
-            if (textToAnim.Length == 0)
-                textAnim = false;
-            timer += Time.deltaTime;
-            if(timer >= .01) {
-                timer = 0;
-                character++;
-                text.text = textToAnim.Substring(0, character);
-                if (character >= textToAnim.Length-1) {
+        if (running) {
+            if (textAnim) {
+                //Animate Text
+                if (textToAnim.Length == 0)
                     textAnim = false;
-                    postAnim();
+                timer += Time.deltaTime;
+                if (timer >= .01) {
+                    timer = 0;
+                    character++;
+                    text.text = textToAnim.Substring(0, character);
+                    if (character >= textToAnim.Length - 1) {
+                        textAnim = false;
+                        postAnim();
+                    }
                 }
-            }
-        } else {
-            //If someone presses the continue button and there is not choice to make, show the next line
-            if (Input.GetButtonDown("Continue") && ink.currentChoices.Count == 0) {
-                showLine();
+            } else {
+                //If someone presses the continue button and there is not choice to make, show the next line
+                if (Input.GetButtonDown("Continue") && ink.currentChoices.Count == 0) {
+                    showLine();
+                }
             }
         }
     }
@@ -95,6 +99,7 @@ public class DialogControler : MonoBehaviour {
                 character = 0;
                 timer = 0;
                 textToAnim = "";
+                running = false;
                 unblockInput();
             }
         }
