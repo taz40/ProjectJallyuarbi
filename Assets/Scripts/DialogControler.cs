@@ -13,7 +13,7 @@ public class DialogControler : MonoBehaviour {
     public GameObject button;
     public GameObject buttonList;
     public GameObject canvas;
-    public GameObject player;
+    GameObject player;
     public GameObject continueText;
     bool textAnim = false;
     string textToAnim = "";
