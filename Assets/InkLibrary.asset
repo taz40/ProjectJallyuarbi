@@ -26,4 +26,43 @@ MonoBehaviour:
     jsonAssetDirectory: {fileID: 0}
     jsonAsset: {fileID: 4900000, guid: f7a188958d3b27e42a65e16971f497a9, type: 3}
   pendingCompilationStack: []
-  compilationStack: []
+  compilationStack:
+  - state: 2
+    immediate: 0
+    inkFile:
+      compileAutomatically: 0
+      inkAsset: {fileID: 102900000, guid: 54e569af3c42b0945ab249c0d11ed6b1, type: 3}
+      jsonAssetDirectory: {fileID: 0}
+      jsonAsset: {fileID: 4900000, guid: f7a188958d3b27e42a65e16971f497a9, type: 3}
+    compiledJson: '{"inkVersion":19,"root":[[["done",{"#f":5,"#n":"g-0"}],null],"done",{"start":["ev",{"VAR?":"g_meet_smith"},"!","/ev",[{"->":".^.b","c":true},{"b":["\n",{"->":"meet_smith"},{"->":"start.5"},null]}],"nop","\n",{"->":"intro"},{"#f":1}],"meet_smith":["ev","str","^???","/str","/ev",{"VAR=":"g_speeker","re":true},"^Talk
+      to smith first.","\n",{"#":"end"},"end",{"#f":1}],"intro":["ev","str","^???","/str","/ev",{"VAR=":"g_speeker","re":true},"^I
+      see you''ve meet smith.","\n","ev","str","^Bill","/str","/ev",{"VAR=":"g_speeker","re":true},"^My
+      name is Bill.","\n","^Goodbye.","\n",{"#":"end"},"end",{"#f":1}],"global decl":["ev","str","^","/str",{"VAR=":"g_players_name"},"str","^Bill","/str",{"VAR=":"npc_name"},"str","^Bill","/str",{"VAR=":"g_speeker"},0,{"VAR=":"g_meet_smith"},"/ev","end",null],"#f":1}],"listDefs":{}}'
+    inkAbsoluteFilePath: /home/piwalker/Projects/ProjectJallyuarbi/Assets/Resources/dialog/test2.ink
+    jsonAbsoluteFilePath: /home/piwalker/Projects/ProjectJallyuarbi/Assets/Resources/dialog/test2.json
+    logOutput: []
+    unhandledErrorOutput: []
+  - state: 1
+    immediate: 0
+    inkFile:
+      compileAutomatically: 0
+      inkAsset: {fileID: 102900000, guid: 1460e815e969b43b8a83a7caa8b48c27, type: 3}
+      jsonAssetDirectory: {fileID: 0}
+      jsonAsset: {fileID: 4900000, guid: 6cf48bb6d89824cc69e35b43f9a1aca6, type: 3}
+    compiledJson: 
+    inkAbsoluteFilePath: /home/piwalker/Projects/ProjectJallyuarbi/Assets/Plugins/Ink/Example/Ink/story.ink
+    jsonAbsoluteFilePath: /home/piwalker/Projects/ProjectJallyuarbi/Assets/Plugins/Ink/Example/Ink/story.json
+    logOutput: []
+    unhandledErrorOutput: []
+  - state: 0
+    immediate: 0
+    inkFile:
+      compileAutomatically: 0
+      inkAsset: {fileID: 102900000, guid: b10d3b896a4a7b14783833c309458c72, type: 3}
+      jsonAssetDirectory: {fileID: 0}
+      jsonAsset: {fileID: 4900000, guid: 026eac434389f8e4b98bb4ba4f1d6928, type: 3}
+    compiledJson: 
+    inkAbsoluteFilePath: /home/piwalker/Projects/ProjectJallyuarbi/Assets/Resources/dialog/test.ink
+    jsonAbsoluteFilePath: /home/piwalker/Projects/ProjectJallyuarbi/Assets/Resources/dialog/test.json
+    logOutput: []
+    unhandledErrorOutput: []
