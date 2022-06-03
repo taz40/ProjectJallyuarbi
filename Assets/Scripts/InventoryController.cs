@@ -5,9 +5,13 @@ using UnityEngine;
 public class InventoryController : MonoBehaviour {
 
     ItemInventory itemInv = new ItemInventory();
+    public static InventoryController _instance;
 
     void Start() {
-        
+        if(_instance != null)
+            Destroy(this.gameObject);
+        else
+            _instance = this;
     }
 
     void Update() {
@@ -25,5 +29,9 @@ public class InventoryController : MonoBehaviour {
                 Debug.Log(s.getItem().getName() + ": " + s.getCount());
             }
         }
+    }
+
+    public void addStack(ItemStack stack){
+        itemInv.addStack(stack);
     }
 }
