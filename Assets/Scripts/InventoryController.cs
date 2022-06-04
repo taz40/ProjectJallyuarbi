@@ -11,16 +11,19 @@ public class InventoryController : MonoBehaviour {
     public GameObject InventoryElement;
     public GameObject ItemSpawnLocation;
     public GameObject ItemPickup;
+    PlayerController player;
 
     void Start() {
         if(_instance != null)
             Destroy(this.gameObject);
         else
             _instance = this;
+
+        player = FindObjectOfType<PlayerController>();
     }
 
     void Update() {
-        if (Input.GetButtonDown("Fire1")) {
+        if (Input.GetButtonDown("Jump")) {
             GameObject go = Instantiate(ItemPickup, ItemSpawnLocation.transform.position, ItemSpawnLocation.transform.rotation);
             Item item = null;
             switch(Random.Range(0,4)){
@@ -49,9 +52,11 @@ public class InventoryController : MonoBehaviour {
         if(Input.GetButtonDown("Inventory")){
             if(InventoryCanvas.activeSelf){
                 InventoryCanvas.SetActive(false);
+                player.unblockInput();
             }else{
                 InventoryCanvas.SetActive(true);
                 UpdateInventoryUI();
+                player.blockInput();
             }
         }
     }

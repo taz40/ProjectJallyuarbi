@@ -13,7 +13,7 @@ public class DialogControler : MonoBehaviour {
     public GameObject button;
     public GameObject buttonList;
     public GameObject canvas;
-    GameObject player;
+    PlayerController player;
     public GameObject continueText;
     bool textAnim = false;
     string textToAnim = "";
@@ -25,17 +25,7 @@ public class DialogControler : MonoBehaviour {
     void Start() {
         globalVars = new Dictionary<string, object>();
         globalVars["g_players_name"] = "Bob";
-        player = FindObjectOfType<PlayerMovement>().gameObject;
-    }
-
-    void blockInput() {
-        player.GetComponent<PlayerMovement>().enabled = false;
-        player.GetComponent<Interact>().enabled = false;
-    }
-
-    void unblockInput() {
-        player.GetComponent<PlayerMovement>().enabled = true;
-        player.GetComponent<Interact>().enabled = true;
+        player = FindObjectOfType<PlayerController>();
     }
 
     public void playStory(Story s) {
@@ -48,7 +38,7 @@ public class DialogControler : MonoBehaviour {
         }
         canvas.SetActive(true);
         showLine();
-        blockInput();
+        player.blockInput();
         text.text = "";
         running = true;
     }
@@ -100,7 +90,7 @@ public class DialogControler : MonoBehaviour {
                 timer = 0;
                 textToAnim = "";
                 running = false;
-                unblockInput();
+                player.unblockInput();
             }
         }
     }
