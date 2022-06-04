@@ -9,6 +9,13 @@ public class ItemInventory {
         bool merge = false;
         foreach (ItemStack s in inv) {
             if (s.getItem() == stack.getItem()) {
+                if(s.getCount() >= s.getItem().getMaxStackSize())
+                    continue;
+                if(s.getCount() + stack.getCount() > s.getItem().getMaxStackSize()){
+                    s.incCount(s.getItem().getMaxStackSize() - s.getCount());
+                    stack.decCount(s.getItem().getMaxStackSize() - s.getCount());
+                    continue;
+                }
                 s.incCount(stack.getCount());
                 return;
             }

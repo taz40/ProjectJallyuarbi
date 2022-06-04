@@ -4,14 +4,32 @@ using UnityEngine;
 
 public class Item {
 
+    string id;
     string name;
+    string description;
+    Sprite sprite;
 
-    public Item(string name) {
+    public Item(string id, string name, string description) {
         this.name = name;
+        this.id = id;
+        this.description = description;
+        sprite = Resources.Load<Sprite>("Sprites/"+id.Replace(":", "/"));
     }
 
     public string getName() {
         return name;
+    }
+
+    public string getID() {
+        return id;
+    }
+
+    public Sprite getSprite() {
+        return sprite;
+    }
+
+    public string getDescription() {
+        return description;
     }
 
     public virtual int getMaxStackSize() {

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ItemKey : Item {
 
-    public ItemKey(string name) 
-        : base(name) {
+    public ItemKey(string id, string name, string description) 
+        : base(id, name, description) {
 
     }
 
