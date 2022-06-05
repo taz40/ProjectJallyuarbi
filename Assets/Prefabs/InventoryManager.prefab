@@ -268,6 +268,7 @@ MonoBehaviour:
   ItemPickup: {fileID: 0}
   InventoryAction: {fileID: 4951650307634475468, guid: 1fe5c38dd0a006fb09dee912f03f6535,
     type: 3}
+  uiClick: {fileID: 8300000, guid: 412dbc55c21fffc7d839e8f8ce553ab5, type: 3}
 --- !u!1 &2963551549088413132
 GameObject:
   m_ObjectHideFlags: 0

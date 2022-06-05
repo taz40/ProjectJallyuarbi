@@ -16,6 +16,8 @@ public class InventoryController : MonoBehaviour {
     PlayerController player;
     List<GameObject> buttons = new List<GameObject>();
     ItemStack selected;
+    public AudioClip uiClick;
+    AudioSource audio;
 
     void Start() {
         if(_instance != null)
@@ -24,6 +26,7 @@ public class InventoryController : MonoBehaviour {
             _instance = this;
 
         player = FindObjectOfType<PlayerController>();
+        audio = player.GetComponentInChildren<AudioSource>();
     }
 
     void Update() {
@@ -100,8 +103,9 @@ public class InventoryController : MonoBehaviour {
         foreach(string action in actions.Keys){
             GameObject obj = Instantiate(InventoryAction, list);
             obj.transform.Find("Name").GetComponent<Text>().text = action;
-            obj.GetComponent<Button>().onClick.AddListener(() => { actions[action](stack); UpdateInventoryUI(); });
+            obj.GetComponent<Button>().onClick.AddListener(() => { PlayClip(uiClick); actions[action](stack); UpdateInventoryUI(); });
         }
+        PlayClip(uiClick);
     }
 
     public void dropStack(ItemStack stack){
@@ -117,5 +121,10 @@ public class InventoryController : MonoBehaviour {
         Transform list = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0);
         foreach(Transform child in list)
             Destroy(child.gameObject);
+    }
+
+    void PlayClip(AudioClip clip){
+        audio.clip = clip;
+        audio.Play();
     }
 }
