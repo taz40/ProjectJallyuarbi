@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class InventoryController : MonoBehaviour {
 
@@ -11,7 +12,10 @@ public class InventoryController : MonoBehaviour {
     public GameObject InventoryElement;
     public GameObject ItemSpawnLocation;
     public GameObject ItemPickup;
+    public GameObject InventoryAction;
     PlayerController player;
+    List<GameObject> buttons = new List<GameObject>();
+    ItemStack selected;
 
     void Start() {
         if(_instance != null)
@@ -26,7 +30,7 @@ public class InventoryController : MonoBehaviour {
         if (Input.GetButtonDown("Jump")) {
             GameObject go = Instantiate(ItemPickup, ItemSpawnLocation.transform.position, ItemSpawnLocation.transform.rotation);
             Item item = null;
-            switch(Random.Range(0,4)){
+            switch(UnityEngine.Random.Range(0,4)){
                 case 0:
                     item = Items.ITEM_TWIG;
                     break;
@@ -45,7 +49,7 @@ public class InventoryController : MonoBehaviour {
             if(item == Items.KEY_ITEM_GATE_KEY || item == Items.WEAPON_SWORD){
                 go.GetComponent<ItemPickup>().setItem(new ItemStack(item, 1));
             }else{
-                go.GetComponent<ItemPickup>().setItem(new ItemStack(item, Random.Range(1, 31)));
+                go.GetComponent<ItemPickup>().setItem(new ItemStack(item, UnityEngine.Random.Range(1, 31)));
             }
         }
 
@@ -65,17 +69,53 @@ public class InventoryController : MonoBehaviour {
         Transform list = transform.GetChild(0).GetChild(0).GetChild(0);
         foreach(Transform child in list)
             Destroy(child.gameObject);
+        buttons = new List<GameObject>();
 
         for(int i = 0; i < itemInv.getStackCount(); i++){
             ItemStack stack = itemInv.getStackAtIndex(i);
             GameObject go = Instantiate(InventoryElement, list);
+            buttons.Add(go);
             go.transform.Find("Name").GetComponent<Text>().text = stack.getItem().getName() + (stack.getCount() > 1 ? " (x" + stack.getCount() + ")" : "");
             go.transform.Find("Description").GetComponent<Text>().text = stack.getItem().getDescription();
             go.transform.Find("Image").GetComponent<Image>().sprite = stack.getItem().getSprite();
+            go.GetComponent<Button>().onClick.AddListener(() => { onClick(go, stack); });
         }
     }
 
     public void addStack(ItemStack stack){
         itemInv.addStack(stack);
+    }
+
+    void onClick(GameObject go, ItemStack stack){
+        selected = stack;
+        buttons.ForEach( obj => obj.GetComponent<Button>().OnDeselect(null));
+        go.GetComponent<Button>().OnSelect(null);
+
+        Transform list = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0);
+        foreach(Transform child in list)
+            Destroy(child.gameObject);
+
+        Dictionary<string, Action<ItemStack>> actions = selected.getItem().getItemActions(new Dictionary<string, Action<ItemStack>>());
+
+        foreach(string action in actions.Keys){
+            GameObject obj = Instantiate(InventoryAction, list);
+            obj.transform.Find("Name").GetComponent<Text>().text = action;
+            obj.GetComponent<Button>().onClick.AddListener(() => { actions[action](stack); UpdateInventoryUI(); });
+        }
+    }
+
+    public void dropStack(ItemStack stack){
+        ItemStack drop = itemInv.removeStack(stack);
+        if(drop.getCount() > 0){
+            GameObject go = Instantiate(ItemPickup, player.transform.position, player.transform.rotation);
+            go.GetComponent<ItemPickup>().setItem(drop);
+        }
+    }
+
+    public void deselect(){
+        selected = null;
+        Transform list = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0);
+        foreach(Transform child in list)
+            Destroy(child.gameObject);
     }
 }

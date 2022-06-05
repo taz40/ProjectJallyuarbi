@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,6 +35,11 @@ public class Item {
 
     public virtual int getMaxStackSize() {
         return int.MaxValue;
+    }
+
+    public Dictionary<string, Action<ItemStack>> getItemActions(Dictionary<string, Action<ItemStack>> actions){
+        actions.Add("Drop", (stack) => {InventoryController._instance.dropStack(stack); InventoryController._instance.deselect(); });
+        return actions;
     }
 
 }
