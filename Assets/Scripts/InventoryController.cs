@@ -16,6 +16,7 @@ public class InventoryController : MonoBehaviour {
     PlayerController player;
     List<GameObject> buttons = new List<GameObject>();
     ItemStack selected;
+    int selectedIndex = 9999;
     public AudioClip uiClick;
     AudioSource audio;
 
@@ -56,6 +57,10 @@ public class InventoryController : MonoBehaviour {
             }
         }
 
+        if(Input.GetButtonDown("Fire1")){
+            Debug.Log(player.getEquipedWeapon().getName());
+        }
+
         if(Input.GetButtonDown("Inventory")){
             if(InventoryCanvas.activeSelf){
                 InventoryCanvas.SetActive(false);
@@ -81,7 +86,9 @@ public class InventoryController : MonoBehaviour {
             go.transform.Find("Name").GetComponent<Text>().text = stack.getItem().getName() + (stack.getCount() > 1 ? " (x" + stack.getCount() + ")" : "");
             go.transform.Find("Description").GetComponent<Text>().text = stack.getItem().getDescription();
             go.transform.Find("Image").GetComponent<Image>().sprite = stack.getItem().getSprite();
-            go.GetComponent<Button>().onClick.AddListener(() => { onClick(go, stack); });
+            int index = i;
+            go.GetComponent<Button>().onClick.AddListener(() => { onClick(go, stack, index); });
+            if(i == selectedIndex) go.GetComponent<Button>().OnSelect(null);
         }
     }
 
@@ -89,8 +96,13 @@ public class InventoryController : MonoBehaviour {
         itemInv.addStack(stack);
     }
 
-    void onClick(GameObject go, ItemStack stack){
+    public PlayerController getPlayer(){
+        return player;
+    }
+
+    void onClick(GameObject go, ItemStack stack, int Index){
         selected = stack;
+        selectedIndex = Index;
         buttons.ForEach( obj => obj.GetComponent<Button>().OnDeselect(null));
         go.GetComponent<Button>().OnSelect(null);
 
@@ -116,8 +128,13 @@ public class InventoryController : MonoBehaviour {
         }
     }
 
+    public void destroyStack(ItemStack stack){
+        itemInv.removeStack(stack);
+    }
+
     public void deselect(){
         selected = null;
+        selectedIndex = 9999;
         Transform list = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0);
         foreach(Transform child in list)
             Destroy(child.gameObject);

@@ -37,8 +37,8 @@ public class Item {
         return int.MaxValue;
     }
 
-    public Dictionary<string, Action<ItemStack>> getItemActions(Dictionary<string, Action<ItemStack>> actions){
-        actions.Add("Drop", (stack) => {InventoryController._instance.dropStack(stack); InventoryController._instance.deselect(); });
+    public virtual Dictionary<string, Action<ItemStack>> getItemActions(Dictionary<string, Action<ItemStack>> actions){
+        actions.Add("Drop", (stack) => {InventoryController._instance.dropStack(new ItemStack(stack.getItem(), 1)); stack.decCount(1); if(stack.getCount() <= 0) InventoryController._instance.deselect(); });
         return actions;
     }
 
