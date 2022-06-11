@@ -16,15 +16,17 @@ public class TileController : MonoBehaviour {
     int width, height;  //The width and height of the tile map
 
     //A list of colors that represent each tile, the index in the array is the tile index (Will be replaced with textures later).
-    Color[] colors = { Color.white, Color.black, Color.red, Color.blue };
+    //Color[] colors = { Color.white, Color.black, Color.red, Color.blue };
 
     //A list that determines if any given tile is collidable. The index in the array is the tile index.
     bool[] collidable = { false, false, true, false };
 
     public GameObject tilePrefab; //A referance to the prefab used to represent tiles.
     public TextAsset mapFile; //A reference to the map file to be loaded.
+    Sprite[] sprite;
 
     void Start() {
+        sprite = Resources.LoadAll<Sprite>("Sprites/Tiles/TileSet");
         GenerateTileMap(); //Generate the tile map as soon as the game starts.
     }
 
@@ -55,12 +57,15 @@ public class TileController : MonoBehaviour {
                 go.name = "Tile_" + x + "_" + y; //We set the tile's name to something understandable to simplify debugging.
 
                 SpriteRenderer sr = go.GetComponent<SpriteRenderer>(); //We get the sprite renderer off of the new game object.
+                //sr.sprite = sprite;
                 int dataIndex = 2 + ((y * width) + x); //This determines the index in the tiles array that contains our tile's data
+                int collidable = dataIndex + (width*height);
                 int tileType = int.Parse(tiles[dataIndex]); //This is the type of tile this is. It corresponds to the colors and collidable arrays above.
-                sr.color = colors[tileType]; //Here we set the tile's color to the correct color based on the array.
+                //sr.color = colors[tileType]; //Here we set the tile's color to the correct color based on the array.
+                sr.sprite = sprite[tileType];
 
                 //Here we check if the tile should be collidable. If it should then we enable its BoxCollider2D
-                if (collidable[tileType]) {
+                if (tiles[collidable] == "1") {
                     go.GetComponent<BoxCollider2D>().enabled = true;
                 }
 
