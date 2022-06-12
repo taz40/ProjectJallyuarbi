@@ -172,6 +172,11 @@ public class EditorTileController : MonoBehaviour {
         this.width = width;
         this.height = height;
         tiles = new int[width,height];
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                tiles[x,y] = selectedTile;
+            }
+        }
         collision = new bool[width,height];
         rotation = new int[width,height];
         GenerateTileMap();
@@ -319,6 +324,11 @@ public class EditorTileController : MonoBehaviour {
         int[,] tiles = new int[width,height];
         bool[,] collision = new bool[width,height];
         int[,] rotation = new int[width,height];
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                tiles[x,y] = selectedTile;
+            }
+        }
         for(int x = 0; x < Mathf.Min(this.width, width); x++){
             for(int y = 0; y < Mathf.Min(this.height,height); y++){
                 tiles[x,y] = this.tiles[x,y];
