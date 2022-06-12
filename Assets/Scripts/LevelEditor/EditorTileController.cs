@@ -30,6 +30,7 @@ public class EditorTileController : MonoBehaviour {
     public GameObject tilePrefab; //A referance to the prefab used to represent tiles.
     public TextAsset mapFile; //A reference to the map file to be loaded.
     public GameObject spritePreview;
+    public GameObject selectionPrefab;
     Sprite[] sprite;
     int[,] tiles;
     bool[,] collision;
@@ -38,6 +39,12 @@ public class EditorTileController : MonoBehaviour {
     string path = "";
     int selectedRotation = 0;
     bool collisionMode = false;
+    GameObject hoverIndicator;
+    int startX, startY;
+    int overX, overY;
+    List<GameObject> selectionIndicators = new List<GameObject>();
+    bool dragging = false;
+    bool selectedCollisionState = true;
 
     void Start() {
         if(_instance != null){
@@ -49,6 +56,8 @@ public class EditorTileController : MonoBehaviour {
         //LoadMapData();
         //GenerateTileMap(); //Generate the tile map as soon as the game starts.
         SetTile(0);
+        hoverIndicator = Instantiate(selectionPrefab);
+        hoverIndicator.SetActive(false);
     }
 
     
@@ -85,21 +94,77 @@ public class EditorTileController : MonoBehaviour {
     }
 
     public void mouseOverTile(int x, int y){
+        if(!dragging) hoverIndicator.SetActive(true);
+        hoverIndicator.transform.position = new Vector3(x, y, 0);
+        if(overX != x || overY != y) {
+            overX = x;
+            overY = y;
+            if(dragging) updateSelectionIndicators();
+        }
+    }
 
+    public void mouseExitTile(int x, int y){
+        hoverIndicator.SetActive(false);
     }
 
     public void mouseDownTile(int x, int y){
+        startX = x;
+        startY = y;
+        overX = x;
+        overY = y;
+        hoverIndicator.SetActive(false);
+        dragging = true;
+        if(collisionMode) selectedCollisionState = !collision[x, y];
+        updateSelectionIndicators();
+    }
+
+    public void mouseUpTile(int x, int y){
+        dragging = false;
+        hoverIndicator.SetActive(true);
+        x = overX;
+        y = overY;
+        int xStart = Mathf.Min(startX, x);
+        int yStart = Mathf.Min(startY, y);
+        int xEnd = Mathf.Max(startX, x);
+        int yEnd = Mathf.Max(startY, y);
+        for(int x1 = xStart; x1 <= xEnd; x1++){
+            for(int y1 = yStart; y1 <= yEnd; y1++){
+                modifyTile(x1, y1);
+            }
+        }
+        foreach(GameObject obj in selectionIndicators){
+            Destroy(obj);
+        }
+    }
+
+    void updateSelectionIndicators(){
+        foreach(GameObject obj in selectionIndicators){
+            Destroy(obj);
+        }
+
+        int x = overX;
+        int y = overY;
+        int xStart = Mathf.Min(startX, x);
+        int yStart = Mathf.Min(startY, y);
+        int xEnd = Mathf.Max(startX, x);
+        int yEnd = Mathf.Max(startY, y);
+        for(int x1 = xStart; x1 <= xEnd; x1++){
+            for(int y1 = yStart; y1 <= yEnd; y1++){
+                GameObject go = Instantiate(selectionPrefab);
+                go.transform.position = new Vector3(x1, y1, 0);
+                selectionIndicators.Add(go);
+            }
+        }
+    }
+
+    void modifyTile(int x, int y){
         if(collisionMode)
-            collision[x,y] = !collision[x,y];
+            collision[x,y] = selectedCollisionState;
         else {
             tiles[x, y] = selectedTile;
             rotation[x, y] = selectedRotation;
         }
         RecreateTile(x,y);
-    }
-
-    public void mouseUpTile(int x, int y){
-
     }
 
     public void CreateMap(int width, int height){

@@ -652,6 +652,7 @@ MonoBehaviour:
     type: 3}
   mapFile: {fileID: 4900000, guid: 86d0124d1053650408e8d72d9a44ca6f, type: 3}
   spritePreview: {fileID: 15899017}
+  selectionPrefab: {fileID: 0}
 --- !u!4 &698731611
 Transform:
   m_ObjectHideFlags: 0

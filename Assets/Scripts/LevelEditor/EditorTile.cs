@@ -33,4 +33,9 @@ public class EditorTile : MonoBehaviour {
         if (EventSystem.current.IsPointerOverGameObject()) return;
         EditorTileController._instance.mouseDownTile(x,y);
     }
+
+    void OnMouseExit(){
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+        EditorTileController._instance.mouseExitTile(x,y);
+    }
 }
