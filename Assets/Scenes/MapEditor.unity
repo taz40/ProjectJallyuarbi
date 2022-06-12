@@ -313,7 +313,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &79699270
@@ -652,7 +652,8 @@ MonoBehaviour:
     type: 3}
   mapFile: {fileID: 4900000, guid: 86d0124d1053650408e8d72d9a44ca6f, type: 3}
   spritePreview: {fileID: 15899017}
-  selectionPrefab: {fileID: 0}
+  selectionPrefab: {fileID: 8499667747312262072, guid: 3670bdffd492ae2f08bf2e364c3d9cff,
+    type: 3}
 --- !u!4 &698731611
 Transform:
   m_ObjectHideFlags: 0
