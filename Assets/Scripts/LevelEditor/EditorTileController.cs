@@ -45,6 +45,10 @@ public class EditorTileController : MonoBehaviour {
     List<GameObject> selectionIndicators = new List<GameObject>();
     bool dragging = false;
     bool selectedCollisionState = true;
+    bool objectMode = false;
+    GameObject objectToPlace;
+    List<GameObject> objects = new List<GameObject>();
+    GameObject selectedObject;
 
     void Start() {
         if(_instance != null){
@@ -62,13 +66,26 @@ public class EditorTileController : MonoBehaviour {
 
     
     void Update() {
-        if(Input.GetButtonDown("Rotate")){
+        if(Input.GetButtonDown("Rotate") && !objectMode && !collisionMode){
             selectedRotation = (selectedRotation + 1) % 4;
             spritePreview.transform.Rotate(0, 0, 90);
         }
         if(Input.GetButtonDown("Jump")){
-            collisionMode = !collisionMode;
+            collisionMode = true;
+            spritePreview.GetComponent<Image>().sprite = null;
+            if(selectedObject != null){
+                selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                selectedObject = null;
+            }
             GenerateTileMap();
+        }
+        if(Input.GetButtonDown("Delete") && selectedObject != null){
+            objects.Remove(selectedObject);
+            Destroy(selectedObject);
+            selectedObject = null;
+        }
+        if(Input.GetButtonDown("Interact") && selectedObject != null){
+            selectedObject.GetComponent<PlaceableObject>().OpenEditorDialog();
         }
         /*if(Input.GetButtonDown("Fire3")){
             string path = EditorUtility.SaveFilePanel("output file", "", "NewMap.txt", "txt");
@@ -108,6 +125,32 @@ public class EditorTileController : MonoBehaviour {
     }
 
     public void mouseDownTile(int x, int y){
+        if(objectMode){
+            foreach(GameObject obj in objects){
+                if(obj.transform.position.x == x && obj.transform.position.y == y){
+                    if(selectedObject != null){
+                        selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                        if(selectedObject == obj){
+                            selectedObject = null;
+                            return;
+                        }
+                        selectedObject = null;
+                    }
+                    selectedObject = obj;
+                    obj.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                    return;
+                }
+            }
+            if(selectedObject != null){
+                selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                selectedObject = null;
+            }
+            GameObject go = Instantiate(objectToPlace);
+            go.transform.position = new Vector3(x, y, 0);
+            go.GetComponent<PlaceableObject>().prefabName = objectToPlace.name;
+            objects.Add(go);
+            return;
+        }
         startX = x;
         startY = y;
         overX = x;
@@ -119,6 +162,7 @@ public class EditorTileController : MonoBehaviour {
     }
 
     public void mouseUpTile(int x, int y){
+        if(objectMode) return;
         dragging = false;
         hoverIndicator.SetActive(true);
         x = overX;
@@ -179,6 +223,9 @@ public class EditorTileController : MonoBehaviour {
         }
         collision = new bool[width,height];
         rotation = new int[width,height];
+        foreach(GameObject go in objects){
+            Destroy(go);
+        }
         GenerateTileMap();
     }
 
@@ -197,6 +244,9 @@ public class EditorTileController : MonoBehaviour {
         tiles = new int[width,height];
         collision = new bool[width,height];
         rotation = new int[width,height];
+        foreach(GameObject go in objects){
+            Destroy(go);
+        }
 
         for(int x = 0; x < width; x++) {
             for(int y = 0; y < height; y++) {
@@ -207,6 +257,13 @@ public class EditorTileController : MonoBehaviour {
                 collision[x, y] = tilesData[collidableIndex] == "True";
                 rotation[x, y] = int.Parse(tilesData[rotationIndex]);
             }
+        }
+
+        for(int i = 2+(height*width)*3; i < tilesData.Length; i++){
+            data = tilesData[i];
+            GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
+            go.GetComponent<PlaceableObject>().LoadFromString(data);
+            objects.Add(go);
         }
     }
 
@@ -243,7 +300,7 @@ public class EditorTileController : MonoBehaviour {
     }
     
     void RecreateTile(int x, int y){
-        Destroy(transform.Find("tile_"+x+"_"+y));
+        Destroy(transform.Find("Tile_"+x+"_"+y).gameObject);
         GameObject go = Instantiate(tilePrefab, new Vector3(x, y, 1), Quaternion.identity, transform); //Here we create a new object from the prefab at the correct x,y position, with us as a parrent.
         go.name = "Tile_" + x + "_" + y; //We set the tile's name to something understandable to simplify debugging.
 
@@ -264,7 +321,26 @@ public class EditorTileController : MonoBehaviour {
 
     public void SetTile(int tile){
         selectedTile = tile;
+        objectMode = false;
+        collisionMode = false;
+        if(selectedObject != null){
+            selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            selectedObject = null;
+        }
         spritePreview.GetComponent<Image>().sprite = sprite[tile];
+    }
+
+    public void SetObject(GameObject go) {
+        collisionMode = false;
+        objectMode = true;
+        objectToPlace = go;
+        spritePreview.GetComponent<Image>().sprite = go.GetComponentInChildren<SpriteRenderer>().sprite;
+        spritePreview.transform.eulerAngles = new Vector3(0, 0, 0);
+        selectedRotation = 0;
+        if(selectedObject != null){
+            selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            selectedObject = null;
+        }
     }
 
     public void LoadMap(){
@@ -299,6 +375,10 @@ public class EditorTileController : MonoBehaviour {
             for(int x = 0; x < width; x++){
                 data += "," + rotation[x,y];
             }
+        }
+        foreach(GameObject go in objects){
+            data += ",";
+            data += go.GetComponent<PlaceableObject>().SaveToString();
         }
         File.WriteAllText(path, data);
     }

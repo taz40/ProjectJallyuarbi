@@ -10,8 +10,24 @@ public class UIController : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        OpenTilesMenu();
+        
+    }
+
+    // Update is called once per frame
+    void Update() {
+        
+    }
+
+    void ClearMenu(){
+        foreach(Transform child in TileList){
+            Destroy(child.gameObject);
+        }
+    }
+
+    public void OpenTilesMenu() {
+        ClearMenu();
         Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/Tiles/TileSet");
-        Debug.Log(sprites.Length);
         for(int i = 0; i < sprites.Length; i++){
             GameObject go = Instantiate(TileElement, TileList);
 
@@ -23,8 +39,17 @@ public class UIController : MonoBehaviour {
         }
     }
 
-    // Update is called once per frame
-    void Update() {
-        
+    public void OpenObjectsMenu(){
+        ClearMenu();
+        GameObject[] gameObjects = Resources.LoadAll<GameObject>("Prefabs/Objects/");
+        for(int i = 0; i < gameObjects.Length; i++){
+            GameObject go = Instantiate(TileElement, TileList);
+
+            Image sr = go.GetComponent<Image>();
+            sr.sprite = gameObjects[i].GetComponentInChildren<SpriteRenderer>().sprite;
+            int index = i;
+            go.GetComponent<Button>().onClick.AddListener(() => { EditorTileController._instance.SetObject(gameObjects[index]); });
+
+        }
     }
 }

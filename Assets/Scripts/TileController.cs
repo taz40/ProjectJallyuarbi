@@ -24,6 +24,7 @@ public class TileController : MonoBehaviour {
     public GameObject tilePrefab; //A referance to the prefab used to represent tiles.
     public TextAsset mapFile; //A reference to the map file to be loaded.
     Sprite[] sprite;
+    List<GameObject> objects = new List<GameObject>();
 
     void Start() {
         sprite = Resources.LoadAll<Sprite>("Sprites/Tiles/TileSet");
@@ -33,8 +34,12 @@ public class TileController : MonoBehaviour {
     public void GenMapEdit(){
         sprite = Resources.LoadAll<Sprite>("Sprites/Tiles/TileSet");
         //First we iterate over all our children and delete them. This is done in case the map has already been previously generated.
-        for(int i = 0; i < transform.childCount; i++) {
-            DestroyImmediate(transform.GetChild(i).gameObject);
+
+        while(transform.childCount != 0){
+            DestroyImmediate(transform.GetChild(0).gameObject);
+        }
+        foreach(GameObject go in objects){
+            Destroy(go);
         }
 
         string data = mapFile.text; //We load the text out of the file.
@@ -67,6 +72,13 @@ public class TileController : MonoBehaviour {
                 }
 
             }
+        }
+
+        for(int i = 2+(height*width)*3; i < tiles.Length; i++){
+            data = tiles[i];
+            GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
+            go.GetComponent<PlaceableObject>().LoadFromString(data);
+            objects.Add(go);
         }
     }
 
@@ -81,6 +93,9 @@ public class TileController : MonoBehaviour {
         for(int i = 0; i < transform.childCount; i++) {
             Destroy(transform.GetChild(i).gameObject);
         }
+        foreach(GameObject go in objects){
+            Destroy(go);
+        }
 
         string data = mapFile.text; //We load the text out of the file.
 
@@ -112,6 +127,12 @@ public class TileController : MonoBehaviour {
                 }
 
             }
+        }
+        for(int i = 2+(height*width)*3; i < tiles.Length; i++){
+            data = tiles[i];
+            GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
+            go.GetComponent<PlaceableObject>().LoadFromString(data);
+            objects.Add(go);
         }
 
     }
