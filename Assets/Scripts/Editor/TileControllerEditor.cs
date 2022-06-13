@@ -18,6 +18,10 @@ public class TileControllerEditor : Editor {
 			script.GenMapEdit();
 		}
 
+		if (GUILayout.Button("Delete Map")) {
+			script.DeleteMapEditor();
+		}
+
 		// Draw default inspector after button...
 		base.OnInspectorGUI();
 	}

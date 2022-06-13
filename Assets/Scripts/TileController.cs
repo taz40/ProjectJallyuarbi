@@ -31,6 +31,15 @@ public class TileController : MonoBehaviour {
         GenerateTileMap(); //Generate the tile map as soon as the game starts.
     }
 
+    public void DeleteMapEditor(){
+        while(transform.childCount != 0){
+            DestroyImmediate(transform.GetChild(0).gameObject);
+        }
+        foreach(GameObject go in objects){
+            DestroyImmediate(go);
+        }
+    }
+
     public void GenMapEdit(){
         sprite = Resources.LoadAll<Sprite>("Sprites/Tiles/TileSet");
         //First we iterate over all our children and delete them. This is done in case the map has already been previously generated.

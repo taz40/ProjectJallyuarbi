@@ -21,11 +21,13 @@ public class PlaceableObject : MonoBehaviour {
     public virtual void LoadFromString(string data){
         string[] tokens = data.Split('/');
         this.transform.position = new Vector3(int.Parse(tokens[1]), int.Parse(tokens[2]), 0);
+        enableCollision = tokens[3] == "True";
+        GetComponentInChildren<BoxCollider2D>().enabled = enableCollision;
     }
 
     public virtual string SaveToString(){
         string data = "";
-        data += prefabName + "/" + transform.position.x + "/" + transform.position.y;
+        data += prefabName + "/" + transform.position.x + "/" + transform.position.y + "/" + enableCollision;
         return data;
     }
 
