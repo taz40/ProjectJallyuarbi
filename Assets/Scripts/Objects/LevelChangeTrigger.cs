@@ -3,56 +3,55 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class PlaceableObject : MonoBehaviour {
+public class LevelChangeTrigger : PlaceableObject {
 
-    public string prefabName;
-    public bool enableCollision = true;
+    public string levelName;
 
-    // Start is called before the first frame update
     void Start() {
         
     }
 
-    // Update is called once per frame
-    void Update() {
-        
+    void OnTriggerEnter2D(Collider2D other){
+        TileController._instance.GenerateTileMap(levelName);
     }
 
-    public virtual void ShowEditorSprites(){
-
+    public override void ShowEditorSprites(){
+        GetComponentInChildren<SpriteRenderer>().enabled = true;
+        GetComponent<BoxCollider2D>().enabled = false;
     }
 
-    public virtual void LoadFromString(string data){
+    public override void LoadFromString(string data){
+        base.LoadFromString(data);
         string[] tokens = data.Split('/');
-        prefabName = tokens[0];
-        this.transform.position = new Vector3(int.Parse(tokens[1]), int.Parse(tokens[2]), 0);
-        enableCollision = tokens[3] == "True";
-        GetComponentInChildren<BoxCollider2D>().enabled = enableCollision;
+        levelName = tokens[4];
     }
 
-    public virtual string SaveToString(){
-        string data = "";
-        data += prefabName + "/" + transform.position.x + "/" + transform.position.y + "/" + enableCollision;
+    public override string SaveToString(){
+        string data = base.SaveToString();
+        data += "/" + levelName;
         return data;
     }
 
-    public virtual void OpenEditorDialog(){
-        PropertiesPanel.Init(enableCollision, this);
+    public override void OpenEditorDialog(){
+        PropertiesPanel.Init(enableCollision, levelName, this);
     }
 
     public void ApplyProperties(PropertiesPanel props){
         enableCollision = props.enableCollision;
+        levelName = props.levelName;
     }
 
-    public class PropertiesPanel : EditorWindow {
+    public new class PropertiesPanel : EditorWindow {
 
         public bool enableCollision;
-        public PlaceableObject placeable;
+        public string levelName;
+        public LevelChangeTrigger placeable;
 
-        public static void Init(bool collision, PlaceableObject placeable){
+        public static void Init(bool collision, string levelName, LevelChangeTrigger placeable){
             PropertiesPanel window = ScriptableObject.CreateInstance<PropertiesPanel>();
             window.enableCollision = collision;
             window.placeable = placeable;
+            window.levelName = levelName;
             window.position = new Rect(Screen.width / 2, Screen.height / 2, 250, 170);
             window.ShowPopup();
         }
@@ -62,6 +61,8 @@ public class PlaceableObject : MonoBehaviour {
             EditorGUILayout.LabelField("Object Properties:", EditorStyles.wordWrappedLabel);
             GUILayout.Space(20);
             enableCollision = GUILayout.Toggle(enableCollision, "isColidable");
+            EditorGUILayout.LabelField("levelName:", EditorStyles.wordWrappedLabel);
+            levelName = GUILayout.TextField(levelName, 25);
             if (GUILayout.Button("Apply")) {
                 placeable.ApplyProperties(this);
                 this.Close();
@@ -71,5 +72,4 @@ public class PlaceableObject : MonoBehaviour {
             }
         }
     }
-
 }

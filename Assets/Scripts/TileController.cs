@@ -22,13 +22,19 @@ public class TileController : MonoBehaviour {
     bool[] collidable = { false, false, true, false };
 
     public GameObject tilePrefab; //A referance to the prefab used to represent tiles.
-    public TextAsset mapFile; //A reference to the map file to be loaded.
+    public string mapName; //A reference to the map file to be loaded.
     Sprite[] sprite;
     List<GameObject> objects = new List<GameObject>();
+    public static TileController _instance;
 
     void Start() {
+        if(_instance != null) {
+            Destroy(this.gameObject);
+            return;
+        }
+        _instance = this;
         sprite = Resources.LoadAll<Sprite>("Sprites/Tiles/TileSet");
-        GenerateTileMap(); //Generate the tile map as soon as the game starts.
+        GenerateTileMap(mapName); //Generate the tile map as soon as the game starts.
     }
 
     public void DeleteMapEditor(){
@@ -51,7 +57,7 @@ public class TileController : MonoBehaviour {
             Destroy(go);
         }
 
-        string data = mapFile.text; //We load the text out of the file.
+        string data = Resources.Load<TextAsset>("Maps/"+mapName).text; //We load the text out of the file.
 
         string[] tiles = data.Split(','); //Here we split it into smaller strings by cutting the string every time there is a ','
 
@@ -97,7 +103,7 @@ public class TileController : MonoBehaviour {
     }
 
     //A function that generates the tile map from the map file.
-    void GenerateTileMap() {
+    public void GenerateTileMap(string mapName) {
         //First we iterate over all our children and delete them. This is done in case the map has already been previously generated.
         for(int i = 0; i < transform.childCount; i++) {
             Destroy(transform.GetChild(i).gameObject);
@@ -106,7 +112,7 @@ public class TileController : MonoBehaviour {
             Destroy(go);
         }
 
-        string data = mapFile.text; //We load the text out of the file.
+        string data = Resources.Load<TextAsset>("Maps/"+mapName).text; //We load the text out of the file.
 
         string[] tiles = data.Split(','); //Here we split it into smaller strings by cutting the string every time there is a ','
 

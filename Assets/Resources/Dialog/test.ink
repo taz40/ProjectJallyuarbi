@@ -1,18 +1,18 @@
 VAR g_players_name = "unknown"
-VAR meet_player = false
+VAR g_meet_player = false
 VAR npc_name = "Smith"
 VAR g_speeker = "???"
 VAR g_meet_smith = false
 
 === start ===
-{ not meet_player:
+{ not g_meet_player:
     -> intro
 }
 ~ g_speeker = "Smith"
 -> help
 
 === intro ===
-~ meet_player = true
+~ g_meet_player = true
 Hello traveler! What's your name?
 ~ g_speeker = g_players_name
 My name is {g_players_name}.

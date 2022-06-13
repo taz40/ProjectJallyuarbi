@@ -6,16 +6,20 @@ using Ink.Runtime;
 
 public class NPCInteraction : Interactable {
 
-    public TextAsset inkFile;
+    public string dialogName;
     string name;
     Story ink;
     DialogControler dialogControler;
 
     // Start is called before the first frame update
     void Start() {
-        ink = new Story(inkFile.text);
+        ink = new Story(Resources.Load<TextAsset>("Dialog/"+dialogName).text);
         name = ink.variablesState["npc_name"].ToString();
         dialogControler = FindObjectOfType<DialogControler>();
+    }
+
+    public void LoadStory(){
+
     }
 
     // Update is called once per frame

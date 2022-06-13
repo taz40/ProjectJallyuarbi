@@ -3,56 +3,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class PlaceableObject : MonoBehaviour {
+public class NPC : PlaceableObject {
 
-    public string prefabName;
-    public bool enableCollision = true;
+    public string dialogName;
 
-    // Start is called before the first frame update
     void Start() {
         
     }
 
-    // Update is called once per frame
-    void Update() {
-        
-    }
-
-    public virtual void ShowEditorSprites(){
-
-    }
-
-    public virtual void LoadFromString(string data){
+    public override void LoadFromString(string data){
+        base.LoadFromString(data);
         string[] tokens = data.Split('/');
-        prefabName = tokens[0];
-        this.transform.position = new Vector3(int.Parse(tokens[1]), int.Parse(tokens[2]), 0);
-        enableCollision = tokens[3] == "True";
-        GetComponentInChildren<BoxCollider2D>().enabled = enableCollision;
+        dialogName = tokens[4];
+        GetComponent<NPCInteraction>().dialogName = dialogName;
+        GetComponent<NPCInteraction>().LoadStory();
     }
 
-    public virtual string SaveToString(){
-        string data = "";
-        data += prefabName + "/" + transform.position.x + "/" + transform.position.y + "/" + enableCollision;
+    public override string SaveToString(){
+        string data = base.SaveToString();
+        data += "/" + dialogName;
         return data;
     }
 
-    public virtual void OpenEditorDialog(){
-        PropertiesPanel.Init(enableCollision, this);
+    public override void OpenEditorDialog(){
+        PropertiesPanel.Init(enableCollision, dialogName, this);
     }
 
     public void ApplyProperties(PropertiesPanel props){
         enableCollision = props.enableCollision;
+        dialogName = props.dialogName;
     }
 
-    public class PropertiesPanel : EditorWindow {
+    public new class PropertiesPanel : EditorWindow {
 
         public bool enableCollision;
-        public PlaceableObject placeable;
+        public string dialogName;
+        public NPC placeable;
 
-        public static void Init(bool collision, PlaceableObject placeable){
+        public static void Init(bool collision, string dialogName, NPC placeable){
             PropertiesPanel window = ScriptableObject.CreateInstance<PropertiesPanel>();
             window.enableCollision = collision;
             window.placeable = placeable;
+            window.dialogName = dialogName;
             window.position = new Rect(Screen.width / 2, Screen.height / 2, 250, 170);
             window.ShowPopup();
         }
@@ -62,6 +54,8 @@ public class PlaceableObject : MonoBehaviour {
             EditorGUILayout.LabelField("Object Properties:", EditorStyles.wordWrappedLabel);
             GUILayout.Space(20);
             enableCollision = GUILayout.Toggle(enableCollision, "isColidable");
+            EditorGUILayout.LabelField("dialogName:", EditorStyles.wordWrappedLabel);
+            dialogName = GUILayout.TextField(dialogName, 25);
             if (GUILayout.Button("Apply")) {
                 placeable.ApplyProperties(this);
                 this.Close();
@@ -71,5 +65,4 @@ public class PlaceableObject : MonoBehaviour {
             }
         }
     }
-
 }

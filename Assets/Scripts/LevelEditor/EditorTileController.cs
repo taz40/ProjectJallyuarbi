@@ -148,6 +148,7 @@ public class EditorTileController : MonoBehaviour {
             GameObject go = Instantiate(objectToPlace);
             go.transform.position = new Vector3(x, y, 0);
             go.GetComponent<PlaceableObject>().prefabName = objectToPlace.name;
+            go.GetComponent<PlaceableObject>().ShowEditorSprites();
             objects.Add(go);
             return;
         }
@@ -179,12 +180,14 @@ public class EditorTileController : MonoBehaviour {
         foreach(GameObject obj in selectionIndicators){
             Destroy(obj);
         }
+        selectionIndicators = new List<GameObject>();
     }
 
     void updateSelectionIndicators(){
         foreach(GameObject obj in selectionIndicators){
             Destroy(obj);
         }
+        selectionIndicators = new List<GameObject>();
 
         int x = overX;
         int y = overY;
@@ -226,6 +229,7 @@ public class EditorTileController : MonoBehaviour {
         foreach(GameObject go in objects){
             Destroy(go);
         }
+        objects = new List<GameObject>();
         GenerateTileMap();
     }
 
@@ -247,6 +251,7 @@ public class EditorTileController : MonoBehaviour {
         foreach(GameObject go in objects){
             Destroy(go);
         }
+        objects = new List<GameObject>();
 
         for(int x = 0; x < width; x++) {
             for(int y = 0; y < height; y++) {
@@ -263,6 +268,7 @@ public class EditorTileController : MonoBehaviour {
             data = tilesData[i];
             GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
             go.GetComponent<PlaceableObject>().LoadFromString(data);
+            go.GetComponent<PlaceableObject>().ShowEditorSprites();
             objects.Add(go);
         }
     }

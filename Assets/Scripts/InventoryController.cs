@@ -31,7 +31,7 @@ public class InventoryController : MonoBehaviour {
     }
 
     void Update() {
-        if (Input.GetButtonDown("Jump")) {
+        /*if (Input.GetButtonDown("Jump")) {
             GameObject go = Instantiate(ItemPickup, ItemSpawnLocation.transform.position, ItemSpawnLocation.transform.rotation);
             Item item = null;
             switch(UnityEngine.Random.Range(0,4)){
@@ -55,11 +55,11 @@ public class InventoryController : MonoBehaviour {
             }else{
                 go.GetComponent<ItemPickup>().setItem(new ItemStack(item, UnityEngine.Random.Range(1, 31)));
             }
-        }
+        }*/
 
-        if(Input.GetButtonDown("Fire1")){
+        /*if(Input.GetButtonDown("Fire1")){
             Debug.Log(player.getEquipedWeapon().getName());
-        }
+        }*/
 
         if(Input.GetButtonDown("Inventory")){
             if(InventoryCanvas.activeSelf){
