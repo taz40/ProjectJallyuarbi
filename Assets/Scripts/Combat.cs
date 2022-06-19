@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Combat : MonoBehaviour {
 
-    public Collider2D attackCollider;
-    public float attackTime;
+    public float coolDown;
     float timer;
     int damageAmount = 0;
     List<GameObject> alreadyHit;
@@ -17,27 +16,20 @@ public class Combat : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(timer <= 0){
-            attackCollider.enabled = false;
-        }else{
+        if(timer > 0){
             timer -= Time.deltaTime;
         }
     }
 
     public void Attack(int amount){
-        alreadyHit = new List<GameObject>();
-        attackCollider.enabled = true;
-        timer = attackTime;
-        damageAmount = amount;
-    }
-
-    void OnTriggerStay2D(Collider2D other){
-        if(alreadyHit.Contains(other.gameObject))
+        if(timer > 0)
             return;
-        alreadyHit.Add(other.gameObject);
-        Health health = other.GetComponentInParent<Health>();
-        if(health != null)
-            health.Damage(damageAmount);
+        timer = coolDown;
+        Collider2D[] targets = Physics2D.OverlapBoxAll(new Vector2(transform.position.x, transform.position.y+0.75f), new Vector2(1, 0.5f), 0);
+        foreach(Collider2D target in targets){
+            Health health = target.GetComponentInParent<Health>();
+            if(health != null)
+                health.Damage(amount);
+        }
     }
-
 }
