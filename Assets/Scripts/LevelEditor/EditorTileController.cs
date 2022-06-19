@@ -336,7 +336,10 @@ public class EditorTileController : MonoBehaviour {
     public void SetTile(int tile){
         selectedTile = tile;
         objectMode = false;
-        collisionMode = false;
+        if(collisionMode){
+            collisionMode = false;
+            GenerateTileMap();
+        }
         if(selectedObject != null){
             selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             selectedObject = null;
@@ -345,7 +348,10 @@ public class EditorTileController : MonoBehaviour {
     }
 
     public void SetObject(GameObject go) {
-        collisionMode = false;
+        if(collisionMode){
+            collisionMode = false;
+            GenerateTileMap();
+        }
         objectMode = true;
         objectToPlace = go;
         spritePreview.GetComponent<Image>().sprite = go.GetComponentInChildren<SpriteRenderer>().sprite;
