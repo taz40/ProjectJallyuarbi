@@ -11,58 +11,54 @@ public class NPC : PlaceableObject {
         
     }
 
-    public override void LoadFromString(string data){
-        base.LoadFromString(data);
+    public override void LoadFromString(string data, bool isEditor = false){
         string[] tokens = data.Split('/');
-        dialogName = tokens[4];
+        dialogName = tokens[0];
         GetComponent<NPCInteraction>().dialogName = dialogName;
         GetComponent<NPCInteraction>().LoadStory();
+        data = tokens[1];
+        for(int i = 2; i < tokens.Length; i++){
+            data = "/" + tokens[i];
+        }
+        base.LoadFromString(data, isEditor);
     }
 
     public override string SaveToString(){
-        string data = base.SaveToString();
-        data += "/" + dialogName;
+        string data  = dialogName + "/" + base.SaveToString();
         return data;
     }
 
     public override void OpenEditorDialog(){
-        PropertiesPanel.Init(enableCollision, dialogName, this);
+        PropertiesPanelNPC.Init(enableCollision, dialogName, this);
     }
 
-    public void ApplyProperties(PropertiesPanel props){
-        enableCollision = props.enableCollision;
-        dialogName = props.dialogName;
+    public override void ApplyProperties(PropertiesPanel props){
+        base.ApplyProperties(props);
+        PropertiesPanelNPC npcProps = (PropertiesPanelNPC)props;
+        dialogName = npcProps.dialogName;
     }
 
-    public new class PropertiesPanel : EditorWindow {
+    public class PropertiesPanelNPC : PropertiesPanel {
 
-        public bool enableCollision;
+
         public string dialogName;
-        public NPC placeable;
-
         public static void Init(bool collision, string dialogName, NPC placeable){
-            PropertiesPanel window = ScriptableObject.CreateInstance<PropertiesPanel>();
-            window.enableCollision = collision;
-            window.placeable = placeable;
-            window.dialogName = dialogName;
+            PropertiesPanelNPC window = ScriptableObject.CreateInstance<PropertiesPanelNPC>();
+            window.InitWindow(placeable);
             window.position = new Rect(Screen.width / 2, Screen.height / 2, 250, 170);
             window.ShowPopup();
         }
 
-        void OnGUI()
+        public override void InitWindow(PlaceableObject placeable) {
+            base.InitWindow(placeable);
+            dialogName = ((NPC)placeable).dialogName;
+        }
+
+        public override void OnGUI()
         {
-            EditorGUILayout.LabelField("Object Properties:", EditorStyles.wordWrappedLabel);
-            GUILayout.Space(20);
-            enableCollision = GUILayout.Toggle(enableCollision, "isColidable");
             EditorGUILayout.LabelField("dialogName:", EditorStyles.wordWrappedLabel);
             dialogName = GUILayout.TextField(dialogName, 25);
-            if (GUILayout.Button("Apply")) {
-                placeable.ApplyProperties(this);
-                this.Close();
-            }
-            if (GUILayout.Button("Cancel")) {
-                this.Close();
-            }
+            base.OnGUI();
         }
     }
 }

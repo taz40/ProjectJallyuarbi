@@ -31,6 +31,8 @@ public class EditorTileController : MonoBehaviour {
     public TextAsset mapFile; //A reference to the map file to be loaded.
     public GameObject spritePreview;
     public GameObject selectionPrefab;
+    public Slider slider;
+    public Text zLevelText;
     Sprite[] sprite;
     int[,] tiles;
     bool[,] collision;
@@ -49,6 +51,7 @@ public class EditorTileController : MonoBehaviour {
     GameObject objectToPlace;
     List<GameObject> objects = new List<GameObject>();
     GameObject selectedObject;
+    float zLevel;
 
     void Start() {
         if(_instance != null){
@@ -86,6 +89,9 @@ public class EditorTileController : MonoBehaviour {
         }
         if(Input.GetButtonDown("Interact") && selectedObject != null){
             selectedObject.GetComponent<PlaceableObject>().OpenEditorDialog();
+        }
+        if(Input.GetButtonDown("Fire3") && collisionMode == false && objectMode == false){
+            SetTile(tiles[overX,overY]);
         }
         /*if(Input.GetButtonDown("Fire3")){
             string path = EditorUtility.SaveFilePanel("output file", "", "NewMap.txt", "txt");
@@ -146,8 +152,9 @@ public class EditorTileController : MonoBehaviour {
                 selectedObject = null;
             }
             GameObject go = Instantiate(objectToPlace);
-            go.transform.position = new Vector3(x, y, 0);
+            go.transform.position = new Vector3(x, y, zLevel);
             go.GetComponent<PlaceableObject>().prefabName = objectToPlace.name;
+            go.GetComponent<PlaceableObject>().zLevel = zLevel;
             go.GetComponent<PlaceableObject>().ShowEditorSprites();
             objects.Add(go);
             return;
@@ -267,7 +274,8 @@ public class EditorTileController : MonoBehaviour {
         for(int i = 2+(height*width)*3; i < tilesData.Length; i++){
             data = tilesData[i];
             GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
-            go.GetComponent<PlaceableObject>().LoadFromString(data);
+            go.GetComponent<PlaceableObject>().prefabName = data.Split('/')[0];
+            go.GetComponent<PlaceableObject>().LoadFromString(data.Substring(data.IndexOf('/')+1), true);
             go.GetComponent<PlaceableObject>().ShowEditorSprites();
             objects.Add(go);
         }
@@ -341,6 +349,9 @@ public class EditorTileController : MonoBehaviour {
         objectMode = true;
         objectToPlace = go;
         spritePreview.GetComponent<Image>().sprite = go.GetComponentInChildren<SpriteRenderer>().sprite;
+        zLevel = go.GetComponentInChildren<PlaceableObject>().zLevel;
+        slider.value = zLevel;
+        zLevelText.text = zLevel+"";
         spritePreview.transform.eulerAngles = new Vector3(0, 0, 0);
         selectedRotation = 0;
         if(selectedObject != null){
@@ -383,7 +394,7 @@ public class EditorTileController : MonoBehaviour {
             }
         }
         foreach(GameObject go in objects){
-            data += ",";
+            data += "," + go.GetComponent<PlaceableObject>().prefabName + "/";
             data += go.GetComponent<PlaceableObject>().SaveToString();
         }
         File.WriteAllText(path, data);
@@ -428,6 +439,11 @@ public class EditorTileController : MonoBehaviour {
         this.width = width;
         this.height = height;
         GenerateTileMap();
+    }
+
+    public void SetZValue(){
+        zLevelText.text = ""+slider.value;
+        zLevel = slider.value;
     }
 
 }

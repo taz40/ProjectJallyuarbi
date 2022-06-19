@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabName: 
   enableCollision: 1
+  zLevel: 0.4
   assetName: tree_oak
 --- !u!1 &6369423239466079650
 GameObject:

@@ -20,56 +20,52 @@ public class LevelChangeTrigger : PlaceableObject {
         GetComponent<BoxCollider2D>().enabled = false;
     }
 
-    public override void LoadFromString(string data){
-        base.LoadFromString(data);
+    public override void LoadFromString(string data, bool isEditor){
         string[] tokens = data.Split('/');
-        levelName = tokens[4];
+        levelName = tokens[0];
+        data = tokens[1];
+        for(int i = 2; i < tokens.Length; i++){
+            data += "/" + tokens[i];
+        }
+        base.LoadFromString(data, isEditor);
     }
 
     public override string SaveToString(){
-        string data = base.SaveToString();
-        data += "/" + levelName;
+        string data  = levelName + "/" + base.SaveToString();
         return data;
     }
 
     public override void OpenEditorDialog(){
-        PropertiesPanel.Init(enableCollision, levelName, this);
+        PropertiesPanelLCT.Init(enableCollision, levelName, this);
     }
 
-    public void ApplyProperties(PropertiesPanel props){
-        enableCollision = props.enableCollision;
-        levelName = props.levelName;
+    public override void ApplyProperties(PropertiesPanel props){
+        base.ApplyProperties(props);
+        PropertiesPanelLCT lctProps = (PropertiesPanelLCT)props;
+        levelName = lctProps.levelName;
     }
 
-    public new class PropertiesPanel : EditorWindow {
+    public class PropertiesPanelLCT : PropertiesPanel {
 
-        public bool enableCollision;
         public string levelName;
-        public LevelChangeTrigger placeable;
 
         public static void Init(bool collision, string levelName, LevelChangeTrigger placeable){
-            PropertiesPanel window = ScriptableObject.CreateInstance<PropertiesPanel>();
-            window.enableCollision = collision;
-            window.placeable = placeable;
-            window.levelName = levelName;
+            PropertiesPanelLCT window = ScriptableObject.CreateInstance<PropertiesPanelLCT>();
+            window.InitWindow(placeable);
             window.position = new Rect(Screen.width / 2, Screen.height / 2, 250, 170);
             window.ShowPopup();
         }
 
-        void OnGUI()
+        public override void InitWindow(PlaceableObject placeable){
+            base.InitWindow(placeable);
+            levelName = ((LevelChangeTrigger)placeable).levelName;
+        }
+
+        public override void OnGUI()
         {
-            EditorGUILayout.LabelField("Object Properties:", EditorStyles.wordWrappedLabel);
-            GUILayout.Space(20);
-            enableCollision = GUILayout.Toggle(enableCollision, "isColidable");
             EditorGUILayout.LabelField("levelName:", EditorStyles.wordWrappedLabel);
             levelName = GUILayout.TextField(levelName, 25);
-            if (GUILayout.Button("Apply")) {
-                placeable.ApplyProperties(this);
-                this.Close();
-            }
-            if (GUILayout.Button("Cancel")) {
-                this.Close();
-            }
+            base.OnGUI();
         }
     }
 }

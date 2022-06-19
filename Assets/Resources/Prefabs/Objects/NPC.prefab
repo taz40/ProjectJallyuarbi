@@ -59,7 +59,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabName: 
-  enableCollision: 0
+  enableCollision: 1
+  zLevel: 0.5
   dialogName: 
 --- !u!1 &5423304005476473341
 GameObject:

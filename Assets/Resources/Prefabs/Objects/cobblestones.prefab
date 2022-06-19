@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabName: 
   enableCollision: 0
+  zLevel: 0.9
 --- !u!1 &6018768411507172485
 GameObject:
   m_ObjectHideFlags: 0

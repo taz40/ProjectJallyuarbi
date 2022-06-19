@@ -56,6 +56,7 @@ public class TileController : MonoBehaviour {
         foreach(GameObject go in objects){
             Destroy(go);
         }
+        objects = new List<GameObject>();
 
         string data = Resources.Load<TextAsset>("Maps/"+mapName).text; //We load the text out of the file.
 
@@ -92,7 +93,8 @@ public class TileController : MonoBehaviour {
         for(int i = 2+(height*width)*3; i < tiles.Length; i++){
             data = tiles[i];
             GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
-            go.GetComponent<PlaceableObject>().LoadFromString(data);
+            go.GetComponent<PlaceableObject>().prefabName = data.Split('/')[0];
+            go.GetComponent<PlaceableObject>().LoadFromString(data.Substring(data.IndexOf('/')+1));
             objects.Add(go);
         }
     }
@@ -146,7 +148,8 @@ public class TileController : MonoBehaviour {
         for(int i = 2+(height*width)*3; i < tiles.Length; i++){
             data = tiles[i];
             GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
-            go.GetComponent<PlaceableObject>().LoadFromString(data);
+            go.GetComponent<PlaceableObject>().prefabName = data.Split('/')[0];
+            go.GetComponent<PlaceableObject>().LoadFromString(data.Substring(data.IndexOf('/')+1));
             objects.Add(go);
         }
 
