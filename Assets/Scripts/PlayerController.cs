@@ -20,7 +20,9 @@ public class PlayerController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        
+        if(Input.GetButtonDown("Fire1")){
+            GetComponent<Combat>().Attack(1);
+        }
     }
 
     public ItemWeapon getEquipedWeapon(){
