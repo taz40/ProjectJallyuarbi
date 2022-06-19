@@ -18,7 +18,7 @@ public class NPC : PlaceableObject {
         GetComponent<NPCInteraction>().LoadStory();
         data = tokens[1];
         for(int i = 2; i < tokens.Length; i++){
-            data = "/" + tokens[i];
+            data += "/" + tokens[i];
         }
         base.LoadFromString(data, isEditor);
     }
