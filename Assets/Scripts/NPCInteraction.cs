@@ -13,13 +13,13 @@ public class NPCInteraction : Interactable {
 
     // Start is called before the first frame update
     void Start() {
-        ink = new Story(Resources.Load<TextAsset>("Dialog/"+dialogName).text);
-        name = ink.variablesState["npc_name"].ToString();
-        dialogControler = FindObjectOfType<DialogControler>();
+
     }
 
     public void LoadStory(){
-
+        ink = new Story(Resources.Load<TextAsset>("Dialog/"+dialogName).text);
+        name = ink.variablesState["npc_name"].ToString();
+        dialogControler = FindObjectOfType<DialogControler>();
     }
 
     // Update is called once per frame
