@@ -17,7 +17,12 @@ public class NPCInteraction : Interactable {
     }
 
     public void LoadStory(){
-        ink = new Story(Resources.Load<TextAsset>("Dialog/"+dialogName).text);
+        TextAsset dialog = Resources.Load<TextAsset>("Dialog/"+dialogName);
+        if(dialog == null){
+            Debug.LogError("Error: Dialog [" + dialogName + "] does not exist.");
+            return;
+        }
+        ink = new Story(dialog.text);
         name = ink.variablesState["npc_name"].ToString();
         dialogControler = FindObjectOfType<DialogControler>();
     }
