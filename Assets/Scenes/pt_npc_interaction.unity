@@ -228,7 +228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 8268817618015664573, guid: 9f452daedafb7ab4b902bc6a73a082ec,
     type: 3}
-  mapName: 1stTown
+  mapName: StartingPoint
 --- !u!4 &1138112141
 Transform:
   m_ObjectHideFlags: 0
