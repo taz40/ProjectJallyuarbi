@@ -13,7 +13,7 @@ using UnityEngine;
 
 public class TileController : MonoBehaviour {
 
-    int width, height;  //The width and height of the tile map
+    public int width, height;  //The width and height of the tile map
 
     //A list of colors that represent each tile, the index in the array is the tile index (Will be replaced with textures later).
     //Color[] colors = { Color.white, Color.black, Color.red, Color.blue };

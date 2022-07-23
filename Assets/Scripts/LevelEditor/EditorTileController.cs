@@ -17,7 +17,7 @@ using UnityEngine.UI;
 
 public class EditorTileController : MonoBehaviour {
 
-    int width, height;  //The width and height of the tile map
+    public int width, height;  //The width and height of the tile map
 
     //A list of colors that represent each tile, the index in the array is the tile index (Will be replaced with textures later).
     //Color[] colors = { Color.white, Color.black, Color.red, Color.blue };
@@ -33,6 +33,7 @@ public class EditorTileController : MonoBehaviour {
     public GameObject selectionPrefab;
     public Slider slider;
     public Text zLevelText;
+    public Text PositionText;
     Sprite[] sprite;
     int[,] tiles;
     bool[,] collision;
@@ -52,6 +53,7 @@ public class EditorTileController : MonoBehaviour {
     List<GameObject> objects = new List<GameObject>();
     GameObject selectedObject;
     float zLevel;
+    int CurrentLayer = 0;
 
     void Start() {
         if(_instance != null){
@@ -119,6 +121,7 @@ public class EditorTileController : MonoBehaviour {
     public void mouseOverTile(int x, int y){
         if(!dragging) hoverIndicator.SetActive(true);
         hoverIndicator.transform.position = new Vector3(x, y, 0);
+        PositionText.text = x + ", " + y;
         if(overX != x || overY != y) {
             overX = x;
             overY = y;
@@ -156,6 +159,8 @@ public class EditorTileController : MonoBehaviour {
             go.GetComponent<PlaceableObject>().prefabName = objectToPlace.name;
             go.GetComponent<PlaceableObject>().zLevel = zLevel;
             go.GetComponent<PlaceableObject>().ShowEditorSprites();
+            //go.GetComponentInChildren<SpriteRenderer>().sortingOrder = CurrentLayer++;
+            go.GetComponentInChildren<SpriteRenderer>().sortingOrder = height-y;
             objects.Add(go);
             return;
         }
@@ -226,6 +231,7 @@ public class EditorTileController : MonoBehaviour {
         this.width = width;
         this.height = height;
         tiles = new int[width,height];
+        CurrentLayer = 0;
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
                 tiles[x,y] = selectedTile;
@@ -271,12 +277,15 @@ public class EditorTileController : MonoBehaviour {
             }
         }
 
+        CurrentLayer = 0;
         for(int i = 2+(height*width)*3; i < tilesData.Length; i++){
             data = tilesData[i];
             GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
             go.GetComponent<PlaceableObject>().prefabName = data.Split('/')[0];
             go.GetComponent<PlaceableObject>().LoadFromString(data.Substring(data.IndexOf('/')+1), true);
             go.GetComponent<PlaceableObject>().ShowEditorSprites();
+            //go.GetComponentInChildren<SpriteRenderer>().sortingOrder = CurrentLayer++;
+            //go.GetComponentInChildren<SpriteRenderer>().sortingOrder = height-y;
             objects.Add(go);
         }
     }

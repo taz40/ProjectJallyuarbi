@@ -26,6 +26,11 @@ public class PlaceableObject : MonoBehaviour {
     public virtual void LoadFromString(string data, bool isEditor = false){
         string[] tokens = data.Split('/');
         this.transform.position = new Vector3(int.Parse(tokens[0]), int.Parse(tokens[1]), float.Parse(tokens[2]));
+        if(isEditor){
+            GetComponentInChildren<SpriteRenderer>().sortingOrder = EditorTileController._instance.height - int.Parse(tokens[1]);
+        }else{
+            GetComponentInChildren<SpriteRenderer>().sortingOrder = TileController._instance.height - int.Parse(tokens[1]);
+        }
         zLevel = transform.position.z;
         enableCollision = tokens[3] == "True";
         GetComponentInChildren<BoxCollider2D>().enabled = enableCollision && !isEditor;
