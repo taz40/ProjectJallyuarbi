@@ -28,7 +28,7 @@ public class Combat : MonoBehaviour {
         Collider2D[] targets = Physics2D.OverlapBoxAll(new Vector2(transform.position.x, transform.position.y+0.75f), new Vector2(1, 0.5f), 0);
         foreach(Collider2D target in targets){
             Health health = target.GetComponentInParent<Health>();
-            if(health != null)
+            if(health != null && health.gameObject != gameObject)
                 health.Damage(amount);
         }
     }
