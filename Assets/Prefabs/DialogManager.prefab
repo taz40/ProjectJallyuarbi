@@ -617,7 +617,6 @@ MonoBehaviour:
   button: {fileID: 5417842051889576369, guid: 6ccaaceddbc885d4aa83daed8e91c66b, type: 3}
   buttonList: {fileID: 3064763801355854346}
   canvas: {fileID: 7786346077260845717}
-  player: {fileID: 0}
   continueText: {fileID: 3730598556578360750}
 --- !u!1 &7786346077260845717
 GameObject:
