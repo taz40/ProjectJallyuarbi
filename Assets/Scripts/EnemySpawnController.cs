@@ -18,11 +18,11 @@ public class EnemySpawnController : MonoBehaviour
     }
 
     public (int, int) loadSpawnerData(string spawner){
-        return spawnerData[string];
+        return spawnerData[spawner];
     }
 
     public void saveSpawnerData(string spawner, (int, int) data){
-        spawnerData[string] = data;
+        spawnerData[spawner] = data;
     }
    
 }
