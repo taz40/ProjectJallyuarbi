@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7000305823923446189}
   - component: {fileID: 8501245170487901425}
-  - component: {fileID: 7562821531912917970}
+  - component: {fileID: 3360833663430347516}
   m_Layer: 0
-  m_Name: changeMapTrigger
+  m_Name: EnemySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,7 +59,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.1, y: 0.1}
   m_EdgeRadius: 0
---- !u!114 &7562821531912917970
+--- !u!114 &3360833663430347516
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -68,15 +68,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7000305823923446178}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4143bea8a50e5b5bba70e86a188523f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 126861db7ef5d5560bc41e3b799398bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabName: 
-  enableCollision: 1
-  zLevel: 0.5
-  levelName: 
-  x: 0
-  y: 0
 --- !u!1 &7000305824844141290
 GameObject:
   m_ObjectHideFlags: 0
