@@ -52,4 +52,21 @@ public class UIController : MonoBehaviour {
 
         }
     }
+
+    public void OpenEntitiesMenu() {
+        ClearMenu();
+        GameObject[] gameObjects = Resources.LoadAll<GameObject>("Prefabs/Entities/");
+        for (int i = 0; i < gameObjects.Length; i++) {
+            GameObject go = Instantiate(TileElement, TileList);
+
+            Image sr = go.GetComponent<Image>();
+            sr.sprite = gameObjects[i].GetComponentInChildren<SpriteRenderer>().sprite;
+            int index = i;
+            go.GetComponent<Button>().onClick.AddListener(() => { EditorTileController._instance.SetObject(gameObjects[index]); });
+        }
+    }
+
+    public void OpenNPCMenu() {
+
+    }
 }
