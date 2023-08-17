@@ -17,6 +17,10 @@ using UnityEngine.UI;
 
 public class EditorTileController : MonoBehaviour {
 
+    enum EditorMode { 
+        MOVE, TILE, OBJECT, COLLISION, PATH
+    }
+
     public int width, height;  //The width and height of the tile map
 
     //A list of colors that represent each tile, the index in the array is the tile index (Will be replaced with textures later).
@@ -41,19 +45,20 @@ public class EditorTileController : MonoBehaviour {
     int selectedTile = 0;
     string path = "";
     int selectedRotation = 0;
-    bool collisionMode = false;
+    //bool collisionMode = false;
     GameObject hoverIndicator;
     int startX, startY;
     int overX, overY;
     List<GameObject> selectionIndicators = new List<GameObject>();
     bool dragging = false;
     bool selectedCollisionState = true;
-    bool objectMode = false;
+    //bool objectMode = false;
     GameObject objectToPlace;
     List<GameObject> objects = new List<GameObject>();
     GameObject selectedObject;
     float zLevel;
     int CurrentLayer = 0;
+    EditorMode mode = EditorMode.MOVE;
 
     void Start() {
         if(_instance != null){
@@ -64,25 +69,36 @@ public class EditorTileController : MonoBehaviour {
         sprite = Resources.LoadAll<Sprite>("Sprites/Tiles/TileSet");
         //LoadMapData();
         //GenerateTileMap(); //Generate the tile map as soon as the game starts.
-        SetTile(0);
+        //SetTile(0);
         hoverIndicator = Instantiate(selectionPrefab);
         hoverIndicator.SetActive(false);
     }
 
     
     void Update() {
-        if(Input.GetButtonDown("Rotate") && !objectMode && !collisionMode){
-            selectedRotation = (selectedRotation + 1) % 4;
-            spritePreview.transform.Rotate(0, 0, 90);
-        }
-        if(Input.GetButtonDown("Jump")){
-            collisionMode = true;
-            spritePreview.GetComponent<Image>().sprite = null;
-            if(selectedObject != null){
-                selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-                selectedObject = null;
+        if(Input.GetButtonDown("Rotate")){
+            if (mode == EditorMode.TILE) {
+                selectedRotation = (selectedRotation + 1) % 4;
+                spritePreview.transform.Rotate(0, 0, 90);
             }
-            GenerateTileMap();
+        }
+        if(Input.GetButtonDown("Jump") && mode != EditorMode.PATH){
+            if (mode == EditorMode.COLLISION) {
+                mode = EditorMode.MOVE;
+                spritePreview.GetComponent<Image>().sprite = null;
+                if (selectedObject != null) {
+                    selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                    selectedObject = null;
+                }
+            } else {
+                mode = EditorMode.COLLISION;
+                spritePreview.GetComponent<Image>().sprite = null;
+                if (selectedObject != null) {
+                    selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                    selectedObject = null;
+                }
+            }
+            CollisionGraphicUpdate();
         }
         if(Input.GetButtonDown("Delete") && selectedObject != null){
             objects.Remove(selectedObject);
@@ -92,30 +108,23 @@ public class EditorTileController : MonoBehaviour {
         if(Input.GetButtonDown("Interact") && selectedObject != null){
             selectedObject.GetComponent<PlaceableObject>().OpenEditorDialog();
         }
-        if(Input.GetButtonDown("Fire3") && collisionMode == false && objectMode == false){
-            SetTile(tiles[overX,overY]);
+        if(Input.GetButtonDown("Fire3")){
+            if (mode == EditorMode.TILE) {
+                SetTile(tiles[overX, overY]);
+                selectedRotation = rotation[overX, overY];
+                spritePreview.transform.rotation = Quaternion.identity;
+                spritePreview.transform.Rotate(0, 0, 90 * selectedRotation);
+            }
         }
-        /*if(Input.GetButtonDown("Fire3")){
-            string path = EditorUtility.SaveFilePanel("output file", "", "NewMap.txt", "txt");
-            string data = "";
-            data += width + "," + height;
-            for(int y = 0; y < height; y++){
-                for(int x = 0; x < width; x++){
-                    data += "," + tiles[x,y];
-                }
+        if(Input.GetButtonDown("Cancel")) {
+            mode = EditorMode.MOVE;
+            spritePreview.GetComponent<Image>().sprite = null;
+            if (selectedObject != null) {
+                selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                selectedObject = null;
             }
-            for(int y = 0; y < height; y++){
-                for(int x = 0; x < width; x++){
-                    data += "," + collision[x,y];
-                }
-            }
-            for(int y = 0; y < height; y++){
-                for(int x = 0; x < width; x++){
-                    data += "," + rotation[x,y];
-                }
-            }
-            File.WriteAllText(path, data);
-        }*/
+            CollisionGraphicUpdate();
+        }
     }
 
     public void mouseOverTile(int x, int y){
@@ -134,7 +143,7 @@ public class EditorTileController : MonoBehaviour {
     }
 
     public void mouseDownTile(int x, int y){
-        if(objectMode){
+        if(mode == EditorMode.OBJECT){
             foreach(GameObject obj in objects){
                 if(obj.transform.position.x == x && obj.transform.position.y == y){
                     if(selectedObject != null){
@@ -162,20 +171,21 @@ public class EditorTileController : MonoBehaviour {
             //go.GetComponentInChildren<SpriteRenderer>().sortingOrder = CurrentLayer++;
             go.GetComponentInChildren<SpriteRenderer>().sortingOrder = height-y;
             objects.Add(go);
-            return;
         }
-        startX = x;
-        startY = y;
-        overX = x;
-        overY = y;
-        hoverIndicator.SetActive(false);
-        dragging = true;
-        if(collisionMode) selectedCollisionState = !collision[x, y];
-        updateSelectionIndicators();
+        if (mode == EditorMode.TILE || mode == EditorMode.COLLISION) {
+            startX = x;
+            startY = y;
+            overX = x;
+            overY = y;
+            hoverIndicator.SetActive(false);
+            dragging = true;
+            if (mode == EditorMode.COLLISION) selectedCollisionState = !collision[x, y];
+            updateSelectionIndicators();
+        }
     }
 
     public void mouseUpTile(int x, int y){
-        if(objectMode) return;
+        if(mode == EditorMode.OBJECT || mode == EditorMode.PATH || mode == EditorMode.MOVE) return;
         dragging = false;
         hoverIndicator.SetActive(true);
         x = overX;
@@ -217,9 +227,9 @@ public class EditorTileController : MonoBehaviour {
     }
 
     void modifyTile(int x, int y){
-        if(collisionMode)
+        if(mode == EditorMode.COLLISION)
             collision[x,y] = selectedCollisionState;
-        else {
+        else if(mode == EditorMode.TILE) {
             tiles[x, y] = selectedTile;
             rotation[x, y] = selectedRotation;
         }
@@ -308,7 +318,7 @@ public class EditorTileController : MonoBehaviour {
                 int tileType = tiles[x, y]; //This is the type of tile this is. It corresponds to the colors and collidable arrays above.
                 //sr.color = colors[tileType]; //Here we set the tile's color to the correct color based on the array.
                 sr.sprite = sprite[tileType];
-                if(collisionMode && collision[x,y])
+                if(mode == EditorMode.COLLISION && collision[x,y])
                     sr.color = Color.red;
                 EditorTile et = go.GetComponent<EditorTile>();
                 et.x = x;
@@ -332,7 +342,7 @@ public class EditorTileController : MonoBehaviour {
         int tileType = tiles[x, y]; //This is the type of tile this is. It corresponds to the colors and collidable arrays above.
         //sr.color = colors[tileType]; //Here we set the tile's color to the correct color based on the array.
         sr.sprite = sprite[tileType];
-        if(collisionMode && collision[x,y])
+        if(mode == EditorMode.COLLISION && collision[x,y])
             sr.color = Color.red;
         EditorTile et = go.GetComponent<EditorTile>();
         et.x = x;
@@ -342,14 +352,20 @@ public class EditorTileController : MonoBehaviour {
         go.GetComponent<BoxCollider2D>().enabled = true;
     }
 
+    void CollisionGraphicUpdate() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (collision[x, y])
+                    RecreateTile(x, y);
+            }
+        }
+    }
+
     public void SetTile(int tile){
         selectedTile = tile;
-        objectMode = false;
-        if(collisionMode){
-            collisionMode = false;
-            GenerateTileMap();
-        }
-        if(selectedObject != null){
+        mode = EditorMode.TILE;
+        CollisionGraphicUpdate();
+        if (selectedObject != null){
             selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             selectedObject = null;
         }
@@ -357,11 +373,8 @@ public class EditorTileController : MonoBehaviour {
     }
 
     public void SetObject(GameObject go) {
-        if(collisionMode){
-            collisionMode = false;
-            GenerateTileMap();
-        }
-        objectMode = true;
+        mode = EditorMode.OBJECT;
+        CollisionGraphicUpdate();
         objectToPlace = go;
         spritePreview.GetComponent<Image>().sprite = go.GetComponentInChildren<SpriteRenderer>().sprite;
         zLevel = go.GetComponentInChildren<PlaceableObject>().zLevel;

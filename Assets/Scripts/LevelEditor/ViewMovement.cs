@@ -12,6 +12,7 @@ public class ViewMovement : MonoBehaviour {
     float vertical;
     float moveLimiter = 1f;
     Camera cam;
+    private Vector3 dragOrigin;
 
     void Start() {
         //get the rigidbody
@@ -26,6 +27,18 @@ public class ViewMovement : MonoBehaviour {
         float zoom = Input.GetAxisRaw("Mouse ScrollWheel");
         if (EventSystem.current.IsPointerOverGameObject()) return;
         cam.orthographicSize += zoom * -1 * cam.orthographicSize;
+
+        if (Input.GetButtonDown("Fire2")) {
+            dragOrigin = Input.mousePosition;
+        }
+
+        if (Input.GetButton("Fire2")) {
+            Vector3 pos = cam.ScreenToViewportPoint(Input.mousePosition - dragOrigin);
+            dragOrigin = Input.mousePosition;
+            float speed = -2 * cam.orthographicSize;
+            Vector3 move = new Vector3(pos.x * speed * cam.aspect, pos.y * speed, 0);
+            transform.Translate(move, Space.World);
+        }
     }
 
     private void FixedUpdate() {
