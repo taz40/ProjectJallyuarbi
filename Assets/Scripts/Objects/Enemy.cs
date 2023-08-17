@@ -29,15 +29,16 @@ public class Enemy : PlaceableObject {
             vec.y = int.Parse(tokens[i * 2 + 2]);
             path.Add(vec);
         }
-        data = tokens[points*2 + 3];
-        for (int i = points * 2 + 4; i < tokens.Length; i++) {
+        data = tokens[(points-1)*2 + 3];
+        for (int i = (points-1) * 2 + 4; i < tokens.Length; i++) {
             data += "/" + tokens[i];
         }
+        Debug.Log(data);
         base.LoadFromString(data, isEditor);
     }
 
     public override string SaveToString() {
-        string data = "";
+        string data = path.Count + "/";
         for(int i = 0; i < path.Count; i++) {
             data += path[i].x + "/" + path[i].y + "/";
         }
@@ -55,7 +56,11 @@ public class Enemy : PlaceableObject {
     }
 
     public void EditPath() {
-        Debug.Log("Editing Path");
+        EditorTileController._instance.enterPathMode(path, savePath);
+    }
+
+    public void savePath(List<Vector2> p) {
+
     }
 
     public class PropertiesPanelEnemy : PropertiesPanel {

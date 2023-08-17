@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -62,8 +63,10 @@ public class EditorTileController : MonoBehaviour {
     int CurrentLayer = 0;
     EditorMode mode = EditorMode.MOVE;
     List<Vector2> patrol_path;
-    List<GameObject> path_objects;
+    List<GameObject> path_objects = new List<GameObject>();
     int pathIndex = 0;
+    Action<List<Vector2>> leavingPathMode;
+    
 
     void Start() {
         if(_instance != null){
@@ -142,7 +145,11 @@ public class EditorTileController : MonoBehaviour {
             }
         }
         if(Input.GetButtonDown("Cancel")) {
+            if(mode == EditorMode.PATH) {
+                savePath();
+            }
             mode = EditorMode.MOVE;
+            redrawPath();
             spritePreview.GetComponent<Image>().sprite = null;
             if (selectedObject != null) {
                 selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
@@ -362,7 +369,11 @@ public class EditorTileController : MonoBehaviour {
         CurrentLayer = 0;
         for(int i = 2+(height*width)*3; i < tilesData.Length; i++){
             data = tilesData[i];
-            GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
+            GameObject go;
+            if(data.Split('/')[0].StartsWith("e_"))
+                go = Instantiate(Resources.Load<GameObject>("Prefabs/Entities/" + data.Split('/')[0]));
+            else
+                go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
             go.GetComponent<PlaceableObject>().prefabName = data.Split('/')[0];
             go.GetComponent<PlaceableObject>().LoadFromString(data.Substring(data.IndexOf('/')+1), true);
             go.GetComponent<PlaceableObject>().ShowEditorSprites();
@@ -544,6 +555,21 @@ public class EditorTileController : MonoBehaviour {
     public void SetZValue(){
         zLevelText.text = ""+slider.value;
         zLevel = slider.value;
+    }
+
+    public void enterPathMode(List<Vector2> path, Action<List<Vector2>> returnListener) {
+        mode = EditorMode.PATH;
+        dragging = false;
+        patrol_path = path;
+        leavingPathMode += returnListener;
+        redrawPath();
+        spritePreview.GetComponent<Image>().sprite = path_circle;
+    }
+
+    public void savePath() {
+        if(leavingPathMode != null)
+            leavingPathMode(patrol_path);
+        leavingPathMode = null;
     }
 
 }
