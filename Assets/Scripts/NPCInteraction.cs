@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Ink.Runtime;
-
+using UnityEditor.Animations;
 
 public class NPCInteraction : Interactable {
 
@@ -24,6 +24,9 @@ public class NPCInteraction : Interactable {
         }
         ink = new Story(dialog.text);
         name = ink.variablesState["npc_name"].ToString();
+        Debug.Log(ink.variablesState["animator"]);
+        AnimatorController controller = Resources.Load<AnimatorController>("Animations/" + ink.variablesState["animator"]);
+        GetComponentInChildren<Animator>().runtimeAnimatorController = controller;
         dialogControler = FindObjectOfType<DialogControler>();
     }
 
