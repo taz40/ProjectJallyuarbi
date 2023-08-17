@@ -42,6 +42,8 @@ public class NPC : PlaceableObject {
 
 
         public string dialogName;
+        public int dialogIndex;
+        public List<string> options;
         public static void Init(bool collision, string dialogName, NPC placeable){
             PropertiesPanelNPC window = ScriptableObject.CreateInstance<PropertiesPanelNPC>();
             window.InitWindow(placeable);
@@ -52,12 +54,24 @@ public class NPC : PlaceableObject {
         public override void InitWindow(PlaceableObject placeable) {
             base.InitWindow(placeable);
             dialogName = ((NPC)placeable).dialogName;
+            TextAsset[] dialogs = Resources.LoadAll<TextAsset>("Dialog");
+            options = new List<string>();
+            for(int i = 0; i < dialogs.Length; i++) {
+                options.Add(dialogs[i].name);
+            }
+            dialogIndex = options.IndexOf(dialogName);
+            if(dialogIndex == -1) {
+                dialogIndex = 0;
+                dialogName = options[0];
+            }
         }
 
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("dialogName:", EditorStyles.wordWrappedLabel);
-            dialogName = GUILayout.TextField(dialogName, 25);
+            dialogIndex = EditorGUILayout.Popup(dialogIndex, options.ToArray());
+            dialogName = options[dialogIndex];
+            //dialogName = GUILayout.TextField(dialogName, 25);
             base.OnGUI();
         }
     }
