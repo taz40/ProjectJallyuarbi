@@ -56,12 +56,14 @@ public class LevelChangeTrigger : PlaceableObject {
     public class PropertiesPanelLCT : PropertiesPanel {
 
         public string levelName;
+        public int levelIndex;
+        public List<string> options;
         public int x, y;
 
         public static void Init(LevelChangeTrigger placeable){
             PropertiesPanelLCT window = ScriptableObject.CreateInstance<PropertiesPanelLCT>();
             window.InitWindow(placeable);
-            window.position = new Rect(Screen.width / 2, Screen.height / 2, 250, 170);
+            window.position = new Rect(Screen.width / 2, Screen.height / 2, 250, 300);
             window.ShowPopup();
         }
 
@@ -70,12 +72,24 @@ public class LevelChangeTrigger : PlaceableObject {
             levelName = ((LevelChangeTrigger)placeable).levelName;
             x = ((LevelChangeTrigger)placeable).x;
             y = ((LevelChangeTrigger)placeable).y;
+            options = new List<string>();
+            TextAsset[] maps = Resources.LoadAll<TextAsset>("Maps");
+            for(int i = 0; i < maps.Length; i++) {
+                options.Add(maps[i].name);
+            }
+            levelIndex = options.IndexOf(levelName);
+            if(levelIndex == -1) {
+                levelIndex = 0;
+                levelName = options[0];
+            }
         }
 
         public override void OnGUI()
         {
             EditorGUILayout.LabelField("levelName:", EditorStyles.wordWrappedLabel);
-            levelName = GUILayout.TextField(levelName, 25);
+            levelIndex = EditorGUILayout.Popup(levelIndex, options.ToArray());
+            levelName = options[levelIndex];
+            //levelName = GUILayout.TextField(levelName, 25);
             EditorGUILayout.LabelField("Player Spawn X:", EditorStyles.wordWrappedLabel);
             x = EditorGUILayout.IntField(x);
             EditorGUILayout.LabelField("Player Spawn Y:", EditorStyles.wordWrappedLabel);
