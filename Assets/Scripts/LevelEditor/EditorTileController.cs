@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Text.RegularExpressions;
-using UnityEditor;
+﻿using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.UI;
 
 /*
@@ -38,6 +36,10 @@ public class EditorTileController : MonoBehaviour {
     public Slider slider;
     public Text zLevelText;
     public Text PositionText;
+    public Sprite path_circle;
+    public Sprite path_arrow;
+    public Sprite blank;
+    public Color path_tint;
     Sprite[] sprite;
     int[,] tiles;
     bool[,] collision;
@@ -59,6 +61,9 @@ public class EditorTileController : MonoBehaviour {
     float zLevel;
     int CurrentLayer = 0;
     EditorMode mode = EditorMode.MOVE;
+    List<Vector2> patrol_path;
+    List<GameObject> path_objects;
+    int pathIndex = 0;
 
     void Start() {
         if(_instance != null){
@@ -100,10 +105,19 @@ public class EditorTileController : MonoBehaviour {
             }
             CollisionGraphicUpdate();
         }
-        if(Input.GetButtonDown("Delete") && selectedObject != null){
-            objects.Remove(selectedObject);
-            Destroy(selectedObject);
-            selectedObject = null;
+        if(Input.GetButtonDown("Delete")){
+            if (mode == EditorMode.OBJECT && selectedObject != null) {
+                objects.Remove(selectedObject);
+                Destroy(selectedObject);
+                selectedObject = null;
+            } else if (mode == EditorMode.PATH ) {
+                int index = patrol_path.IndexOf(new Vector2(overX, overY));
+                if (index != -1) {
+                    patrol_path.RemoveAt(index);
+                    dragging = false;
+                    redrawPath();
+                }
+            }
         }
         if(Input.GetButtonDown("Interact") && selectedObject != null){
             selectedObject.GetComponent<PlaceableObject>().OpenEditorDialog();
@@ -114,6 +128,17 @@ public class EditorTileController : MonoBehaviour {
                 selectedRotation = rotation[overX, overY];
                 spritePreview.transform.rotation = Quaternion.identity;
                 spritePreview.transform.Rotate(0, 0, 90 * selectedRotation);
+            }else if(mode == EditorMode.PATH) {
+                int index = patrol_path.IndexOf(new Vector2(overX, overY));
+                if(index != -1) {
+                    if (index != patrol_path.Count) {
+                        Vector2 new_node = Vector2.Lerp(patrol_path[index], patrol_path[index + 1], 0.5f);
+                        new_node.x = Mathf.Floor(new_node.x);
+                        new_node.y = Mathf.Floor(new_node.y);
+                        patrol_path.Insert(index + 1, new_node);
+                        redrawPath();
+                    }
+                }
             }
         }
         if(Input.GetButtonDown("Cancel")) {
@@ -125,16 +150,28 @@ public class EditorTileController : MonoBehaviour {
             }
             CollisionGraphicUpdate();
         }
+        if(Input.GetButtonDown("Submit")) {
+            mode = EditorMode.PATH;
+            patrol_path = new List<Vector2>();
+            path_objects = new List<GameObject>();
+            spritePreview.GetComponent<Image>().sprite = path_circle;
+        }
     }
 
     public void mouseOverTile(int x, int y){
-        if(!dragging) hoverIndicator.SetActive(true);
+        if (!dragging) hoverIndicator.SetActive(true);
         hoverIndicator.transform.position = new Vector3(x, y, 0);
         PositionText.text = x + ", " + y;
-        if(overX != x || overY != y) {
+        if (overX != x || overY != y) {
             overX = x;
             overY = y;
-            if(dragging) updateSelectionIndicators();
+            if (dragging && mode != EditorMode.PATH) updateSelectionIndicators();
+        }
+        if(dragging && mode == EditorMode.PATH) {
+            if (patrol_path[pathIndex] != new Vector2(x, y)) {
+                patrol_path[pathIndex] = new Vector2(x, y);
+                redrawPath();
+            }
         }
     }
 
@@ -171,8 +208,7 @@ public class EditorTileController : MonoBehaviour {
             //go.GetComponentInChildren<SpriteRenderer>().sortingOrder = CurrentLayer++;
             go.GetComponentInChildren<SpriteRenderer>().sortingOrder = height-y;
             objects.Add(go);
-        }
-        if (mode == EditorMode.TILE || mode == EditorMode.COLLISION) {
+        }else if (mode == EditorMode.TILE || mode == EditorMode.COLLISION) {
             startX = x;
             startY = y;
             overX = x;
@@ -181,12 +217,48 @@ public class EditorTileController : MonoBehaviour {
             dragging = true;
             if (mode == EditorMode.COLLISION) selectedCollisionState = !collision[x, y];
             updateSelectionIndicators();
+        }else if(mode == EditorMode.PATH) {
+            if (patrol_path.IndexOf(new Vector2(x, y)) == -1){
+                patrol_path.Add(new Vector2(x, y));
+                redrawPath();
+            } else {
+                dragging = true;
+                pathIndex = patrol_path.IndexOf(new Vector2(x, y));
+            }
+            
+        }
+    }
+
+    public void redrawPath() {
+        foreach(GameObject go in path_objects) {
+            Destroy(go);
+        }
+        path_objects = new List<GameObject>();
+        if (mode == EditorMode.PATH) {
+            for (int i = 0; i < patrol_path.Count; i++) {
+                Vector2 vec = patrol_path[i];
+                GameObject go = Instantiate(tilePrefab, new Vector3(vec.x, vec.y), Quaternion.identity);
+                go.GetComponentInChildren<SpriteRenderer>().sprite = path_circle;
+                if (i != patrol_path.Count - 1) {
+                    go.GetComponentInChildren<SpriteRenderer>().sprite = path_arrow;
+                    Vector2 offset = patrol_path[i + 1] - vec;
+                    go.transform.rotation = Quaternion.LookRotation(Vector3.forward, offset);
+                    GameObject line = Instantiate(tilePrefab, Vector2.Lerp(vec, patrol_path[i + 1], 0.5f), go.transform.rotation);
+                    line.transform.localScale = new Vector2(0.25f, Vector2.Distance(vec, patrol_path[i + 1]));
+                    line.GetComponentInChildren<SpriteRenderer>().sprite = blank;
+                    line.GetComponentInChildren<SpriteRenderer>().color = path_tint;
+                    path_objects.Add(line);
+                }
+                go.GetComponentInChildren<SpriteRenderer>().sortingOrder = 0;
+                go.GetComponentInChildren<SpriteRenderer>().sortingLayerName = "UI";
+                path_objects.Add(go);
+            }
         }
     }
 
     public void mouseUpTile(int x, int y){
-        if(mode == EditorMode.OBJECT || mode == EditorMode.PATH || mode == EditorMode.MOVE) return;
         dragging = false;
+        if (mode == EditorMode.OBJECT || mode == EditorMode.PATH || mode == EditorMode.MOVE) return;
         hoverIndicator.SetActive(true);
         x = overX;
         y = overY;
