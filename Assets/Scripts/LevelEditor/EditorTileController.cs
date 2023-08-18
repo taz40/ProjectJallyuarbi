@@ -17,7 +17,7 @@ using UnityEngine.UI;
 public class EditorTileController : MonoBehaviour {
 
     enum EditorMode { 
-        MOVE, TILE, OBJECT, COLLISION, PATH
+        MOVE, TILE, OBJECT, COLLISION, PATH, NPC
     }
 
     public int width, height;  //The width and height of the tile map
@@ -41,6 +41,8 @@ public class EditorTileController : MonoBehaviour {
     public Sprite path_arrow;
     public Sprite blank;
     public Color path_tint;
+    public GameObject NPC;
+    string npc_dialog;
     Sprite[] sprite;
     int[,] tiles;
     bool[,] collision;
@@ -157,12 +159,6 @@ public class EditorTileController : MonoBehaviour {
             }
             CollisionGraphicUpdate();
         }
-        if(Input.GetButtonDown("Submit")) {
-            mode = EditorMode.PATH;
-            patrol_path = new List<Vector2>();
-            path_objects = new List<GameObject>();
-            spritePreview.GetComponent<Image>().sprite = path_circle;
-        }
     }
 
     public void mouseOverTile(int x, int y){
@@ -187,7 +183,7 @@ public class EditorTileController : MonoBehaviour {
     }
 
     public void mouseDownTile(int x, int y){
-        if(mode == EditorMode.OBJECT){
+        if(mode == EditorMode.OBJECT || mode == EditorMode.NPC){
             foreach(GameObject obj in objects){
                 if(obj.transform.position.x == x && obj.transform.position.y == y){
                     if(selectedObject != null){
@@ -215,6 +211,11 @@ public class EditorTileController : MonoBehaviour {
             //go.GetComponentInChildren<SpriteRenderer>().sortingOrder = CurrentLayer++;
             go.GetComponentInChildren<SpriteRenderer>().sortingOrder = height-y;
             objects.Add(go);
+            if(mode == EditorMode.NPC) {
+                go.GetComponentInChildren<NPC>().dialogName = npc_dialog;
+                go.GetComponentInChildren<NPCInteraction>().dialogName = npc_dialog;
+                go.GetComponentInChildren<NPCInteraction>().LoadStory();
+            }
         }else if (mode == EditorMode.TILE || mode == EditorMode.COLLISION) {
             startX = x;
             startY = y;
@@ -316,6 +317,12 @@ public class EditorTileController : MonoBehaviour {
     }
 
     public void CreateMap(int width, int height){
+        if(mode == EditorMode.PATH) {
+            savePath();
+            mode = EditorMode.MOVE;
+            redrawPath();
+            spritePreview.GetComponent<Image>().sprite = null;
+        }
         path = "";
         this.width = width;
         this.height = height;
@@ -370,7 +377,9 @@ public class EditorTileController : MonoBehaviour {
         for(int i = 2+(height*width)*3; i < tilesData.Length; i++){
             data = tilesData[i];
             GameObject go;
-            if(data.Split('/')[0].StartsWith("e_"))
+            if (data.Split('/')[0].Equals("NPC"))
+                go = Instantiate(NPC);
+            else if(data.Split('/')[0].StartsWith("e_"))
                 go = Instantiate(Resources.Load<GameObject>("Prefabs/Entities/" + data.Split('/')[0]));
             else
                 go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/"+data.Split('/')[0]));
@@ -446,7 +455,11 @@ public class EditorTileController : MonoBehaviour {
 
     public void SetTile(int tile){
         selectedTile = tile;
+        if(mode == EditorMode.PATH) {
+            savePath();
+        }
         mode = EditorMode.TILE;
+        redrawPath();
         CollisionGraphicUpdate();
         if (selectedObject != null){
             selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
@@ -456,7 +469,11 @@ public class EditorTileController : MonoBehaviour {
     }
 
     public void SetObject(GameObject go) {
+        if(mode == EditorMode.PATH) {
+            savePath();
+        }
         mode = EditorMode.OBJECT;
+        redrawPath();
         CollisionGraphicUpdate();
         objectToPlace = go;
         spritePreview.GetComponent<Image>().sprite = go.GetComponentInChildren<SpriteRenderer>().sprite;
@@ -472,6 +489,12 @@ public class EditorTileController : MonoBehaviour {
     }
 
     public void LoadMap(){
+        if(mode == EditorMode.PATH) {
+            savePath();
+            mode = EditorMode.MOVE;
+            redrawPath();
+            spritePreview.GetComponent<Image>().sprite = null;
+        }
         LoadMapData();
         GenerateTileMap();
     }
@@ -486,6 +509,12 @@ public class EditorTileController : MonoBehaviour {
         if(path == ""){
             SaveMapAs();
             return;
+        }
+        if(mode == EditorMode.PATH) {
+            savePath();
+            mode = EditorMode.MOVE;
+            redrawPath();
+            spritePreview.GetComponent<Image>().sprite = null;
         }
         string data = "";
         data += width + "," + height;
@@ -570,6 +599,15 @@ public class EditorTileController : MonoBehaviour {
         if(leavingPathMode != null)
             leavingPathMode(patrol_path);
         leavingPathMode = null;
+    }
+
+    public void SetNPC(string dialogName) {
+        if (mode == EditorMode.PATH)
+            savePath();
+        mode = EditorMode.NPC;
+        redrawPath();
+        npc_dialog = dialogName;
+        objectToPlace = NPC;
     }
 
 }

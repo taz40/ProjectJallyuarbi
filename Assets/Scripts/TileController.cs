@@ -26,6 +26,7 @@ public class TileController : MonoBehaviour {
     Sprite[] sprite;
     List<GameObject> objects = new List<GameObject>();
     public static TileController _instance;
+    public GameObject NPC;
 
     void Start() {
         if(_instance != null) {
@@ -93,7 +94,9 @@ public class TileController : MonoBehaviour {
         for(int i = 2+(height*width)*3; i < tiles.Length; i++){
             data = tiles[i];
             GameObject go;
-            if (data.Split('/')[0].StartsWith("e_"))
+            if (data.Split('/')[0].Equals("NPC"))
+                go = Instantiate(NPC);
+            else if (data.Split('/')[0].StartsWith("e_"))
                 go = Instantiate(Resources.Load<GameObject>("Prefabs/Entities/" + data.Split('/')[0]));
             else
                 go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/" + data.Split('/')[0]));
@@ -152,7 +155,9 @@ public class TileController : MonoBehaviour {
         for(int i = 2+(height*width)*3; i < tiles.Length; i++){
             data = tiles[i];
             GameObject go;
-            if (data.Split('/')[0].StartsWith("e_"))
+            if (data.Split('/')[0].Equals("NPC"))
+                go = Instantiate(NPC);
+            else if (data.Split('/')[0].StartsWith("e_"))
                 go = Instantiate(Resources.Load<GameObject>("Prefabs/Entities/" + data.Split('/')[0]));
             else
                 go = Instantiate(Resources.Load<GameObject>("Prefabs/Objects/" + data.Split('/')[0]));

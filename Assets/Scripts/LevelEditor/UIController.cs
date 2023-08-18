@@ -67,6 +67,17 @@ public class UIController : MonoBehaviour {
     }
 
     public void OpenNPCMenu() {
+        ClearMenu();
+        TextAsset[] dialogs = Resources.LoadAll<TextAsset>("Dialog/");
+        for (int i = 0; i < dialogs.Length; i++) {
+            GameObject go = Instantiate(TileElement, TileList);
 
+            Image sr = go.GetComponent<Image>();
+            sr.sprite = null;
+            int index = i;
+            go.transform.GetChild(0).gameObject.SetActive(true);
+            go.GetComponentInChildren<Text>().text = dialogs[i].name;
+            go.GetComponent<Button>().onClick.AddListener(() => { EditorTileController._instance.SetNPC(dialogs[index].name); });
+        }
     }
 }
