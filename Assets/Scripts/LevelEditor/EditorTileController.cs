@@ -68,7 +68,8 @@ public class EditorTileController : MonoBehaviour {
     List<GameObject> path_objects = new List<GameObject>();
     int pathIndex = 0;
     Action<List<Vector2>> leavingPathMode;
-    
+    GameObject draggedObject = null;
+
 
     void Start() {
         if(_instance != null){
@@ -168,12 +169,16 @@ public class EditorTileController : MonoBehaviour {
         if (overX != x || overY != y) {
             overX = x;
             overY = y;
-            if (dragging && mode != EditorMode.PATH) updateSelectionIndicators();
+            if (dragging && mode != EditorMode.PATH && mode != EditorMode.OBJECT) updateSelectionIndicators();
         }
-        if(dragging && mode == EditorMode.PATH) {
-            if (patrol_path[pathIndex] != new Vector2(x, y)) {
-                patrol_path[pathIndex] = new Vector2(x, y);
-                redrawPath();
+        if(dragging) {
+            if (mode == EditorMode.PATH) {
+                if (patrol_path[pathIndex] != new Vector2(x, y)) {
+                    patrol_path[pathIndex] = new Vector2(x, y);
+                    redrawPath();
+                }
+            }else if(mode == EditorMode.OBJECT) {
+                draggedObject.transform.position = new Vector3(x, y, draggedObject.transform.position.z);
             }
         }
     }
@@ -186,7 +191,9 @@ public class EditorTileController : MonoBehaviour {
         if(mode == EditorMode.OBJECT || mode == EditorMode.NPC){
             foreach(GameObject obj in objects){
                 if(obj.transform.position.x == x && obj.transform.position.y == y){
-                    if(selectedObject != null){
+                    draggedObject = obj;
+                    dragging = true;
+                    if (selectedObject != null){
                         selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
                         if(selectedObject == obj){
                             selectedObject = null;
@@ -202,6 +209,7 @@ public class EditorTileController : MonoBehaviour {
             if(selectedObject != null){
                 selectedObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
                 selectedObject = null;
+
             }
             GameObject go = Instantiate(objectToPlace);
             float zlevelOffset = 0.0001f * y;
