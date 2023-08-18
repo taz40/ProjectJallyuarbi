@@ -204,9 +204,10 @@ public class EditorTileController : MonoBehaviour {
                 selectedObject = null;
             }
             GameObject go = Instantiate(objectToPlace);
-            go.transform.position = new Vector3(x, y, zLevel);
+            float zlevelOffset = 0.0001f * y;
+            go.transform.position = new Vector3(x, y, zLevel + zlevelOffset);
             go.GetComponent<PlaceableObject>().prefabName = objectToPlace.name;
-            go.GetComponent<PlaceableObject>().zLevel = zLevel;
+            go.GetComponent<PlaceableObject>().zLevel = zLevel + zlevelOffset;
             go.GetComponent<PlaceableObject>().ShowEditorSprites();
             //go.GetComponentInChildren<SpriteRenderer>().sortingOrder = CurrentLayer++;
             go.GetComponentInChildren<SpriteRenderer>().sortingOrder = height-y;
