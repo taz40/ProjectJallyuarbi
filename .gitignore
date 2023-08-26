@@ -72,3 +72,4 @@ crashlytics-build.properties
 
 # Ink Library Assets
 /[Aa]ssets/InkLibrary.asset
+/[Aa]ssets/InkLibrary.asset.meta
