@@ -84,7 +84,7 @@ TextureImporter:
       213: 7366574186100958069
     second: tree_oak_26
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -101,10 +101,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -113,9 +115,9 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -143,6 +145,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -154,6 +158,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -166,6 +171,33 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -748,9 +780,36 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      tree_oak_0: -2699505154609008287
+      tree_oak_1: -4708098214230497653
+      tree_oak_10: -3648814232192665355
+      tree_oak_11: -9184812024792223806
+      tree_oak_12: 550732653071473710
+      tree_oak_13: 5537218281048102333
+      tree_oak_14: 8414260742849323141
+      tree_oak_15: -3365616619574827940
+      tree_oak_16: -1878221812806461803
+      tree_oak_17: 6951447294979564934
+      tree_oak_18: -2883420700235324921
+      tree_oak_19: -2821210647040050358
+      tree_oak_2: -5590696268459541370
+      tree_oak_20: 403138408011542687
+      tree_oak_21: 2689424316577652292
+      tree_oak_22: -1523119004332595424
+      tree_oak_23: 8456301577441540912
+      tree_oak_24: 8414834817105218844
+      tree_oak_25: 7131800310502883285
+      tree_oak_26: 7366574186100958069
+      tree_oak_3: -8970930855085875946
+      tree_oak_4: -3892294800055885751
+      tree_oak_5: -5701360102436117157
+      tree_oak_6: -4293676455069441450
+      tree_oak_7: -7987940708369534722
+      tree_oak_8: 6063564559396826603
+      tree_oak_9: 175176226939312209
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

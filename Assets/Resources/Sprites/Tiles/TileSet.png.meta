@@ -126,7 +126,7 @@ TextureImporter:
       213: -1951840979382037087
     second: TileSet_40
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -143,10 +143,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -156,8 +158,8 @@ TextureImporter:
   textureSettings:
     serializedVersion: 2
     filterMode: 1
-    aniso: -1
-    mipBias: -100
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -185,6 +187,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -196,6 +200,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -208,6 +213,33 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -1084,9 +1116,50 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      TileSet_0: -8213782765776912250
+      TileSet_1: -8518063296010493290
+      TileSet_10: -8082063572214372527
+      TileSet_11: -8265232490957100610
+      TileSet_12: -3293226114871820431
+      TileSet_13: 3253857429519456842
+      TileSet_14: -92138599614758986
+      TileSet_15: 8886558474639481304
+      TileSet_16: -5913383478371155081
+      TileSet_17: 8568142618917566389
+      TileSet_18: -5142650238756481487
+      TileSet_19: -9220975972155412195
+      TileSet_2: -8871038989383191861
+      TileSet_20: 8290902767777311385
+      TileSet_21: 8872051553670027449
+      TileSet_22: -3732473049520515647
+      TileSet_23: 1647431860368624933
+      TileSet_24: 4126501046328475923
+      TileSet_25: -8781195206041585980
+      TileSet_26: 927177990519731529
+      TileSet_27: 7842336126166950848
+      TileSet_28: 6646749294878654471
+      TileSet_29: 7609080790651641447
+      TileSet_3: 3637694436591301765
+      TileSet_30: -171840168374121442
+      TileSet_31: 145889726448105504
+      TileSet_32: -375647225257794138
+      TileSet_33: 1741211380175115904
+      TileSet_34: 569002774457595050
+      TileSet_35: -3265415099871117597
+      TileSet_36: -5267706714917848589
+      TileSet_37: -3047483046365333407
+      TileSet_38: 4583682835345809999
+      TileSet_39: 2727717926491812537
+      TileSet_4: -8921557701501664739
+      TileSet_40: -1951840979382037087
+      TileSet_5: 658610804543150169
+      TileSet_6: 1303555410413672225
+      TileSet_7: -3462126092104230500
+      TileSet_8: 3818911086006376876
+      TileSet_9: -2968160521145883719
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
